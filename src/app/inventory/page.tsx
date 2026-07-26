@@ -30,13 +30,13 @@ export default function InventoryPage() {
 
   return (
     <div>
-      <section className="py-24">
+      <section className="py-24 bg-canvas">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <ScrollReveal>
-            <h1 className="font-serif-editorial tracking-editorial-tight text-3xl sm:text-4xl lg:text-5xl mb-4" style={{ color: '#F7F7F4', lineHeight: '1.1' }}>
+            <h1 className="font-serif-editorial tracking-editorial-tight text-3xl sm:text-4xl lg:text-5xl mb-4" style={{ color: 'var(--text-primary)', lineHeight: '1.1' }}>
               Models & Prices
             </h1>
-            <p className="text-sm mb-8" style={{ color: '#9B9B96', lineHeight: '1.7' }}>
+            <p className="text-sm mb-8" style={{ color: 'var(--text-secondary)', lineHeight: '1.7' }}>
               Browse our model and price guide. These are starting estimates for sourcing a vehicle from Japan, not locally stocked vehicles. Request any model and Shoondili will search for a suitable unit, provide a written quotation, and coordinate the order.
             </p>
           </ScrollReveal>
@@ -48,11 +48,11 @@ export default function InventoryPage() {
         </div>
       </section>
 
-      <section className="py-8" style={{ borderTop: '1px solid rgba(255,255,255,0.08)' }}>
+      <section className="py-8 bg-canvas-soft" style={{ borderTop: '1px solid var(--border-color)' }}>
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <ScrollReveal>
             <div className="flex items-center justify-between mb-6">
-              <h2 className="text-xs uppercase tracking-[0.15em]" style={{ color: '#9B9B96' }}>Filters</h2>
+              <h2 className="text-xs uppercase tracking-[0.15em]" style={{ color: 'var(--text-secondary)' }}>Filters</h2>
               {hasFilters && (
                 <button
                   className="text-xs font-mono btn-flat px-4 py-1"
@@ -68,7 +68,7 @@ export default function InventoryPage() {
                 value={makeFilter}
                 onChange={(e) => setMakeFilter(e.target.value)}
                 className="px-4 py-3 rounded-full text-xs font-mono"
-                style={{ backgroundColor: '#181818', color: makeFilter ? '#F7F7F4' : '#9B9B96', border: '1px solid rgba(255,255,255,0.12)' }}
+                style={{ backgroundColor: 'var(--surface)', color: makeFilter ? 'var(--text-primary)' : 'var(--text-secondary)', border: '1px solid var(--border-color)' }}
                 aria-label="Filter by make"
               >
                 <option value="">Any make</option>
@@ -81,7 +81,7 @@ export default function InventoryPage() {
                 value={yearMin}
                 onChange={(e) => setYearMin(e.target.value)}
                 className="px-4 py-3 rounded-full text-xs font-mono"
-                style={{ backgroundColor: '#181818', color: '#9B9B96', border: '1px solid rgba(255,255,255,0.12)' }}
+                style={{ backgroundColor: 'var(--surface)', color: 'var(--text-secondary)', border: '1px solid var(--border-color)' }}
                 aria-label="Minimum year"
               />
 
@@ -91,7 +91,7 @@ export default function InventoryPage() {
                 value={priceMax}
                 onChange={(e) => setPriceMax(e.target.value)}
                 className="px-4 py-3 rounded-full text-xs font-mono"
-                style={{ backgroundColor: '#181818', color: '#9B9B96', border: '1px solid rgba(255,255,255,0.12)' }}
+                style={{ backgroundColor: 'var(--surface)', color: 'var(--text-secondary)', border: '1px solid var(--border-color)' }}
                 aria-label="Maximum price"
               />
             </div>
@@ -99,18 +99,18 @@ export default function InventoryPage() {
         </div>
       </section>
 
-      <section className="py-12">
+      <section className="py-12 bg-canvas-soft">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <p className="text-xs font-mono mb-8" style={{ color: '#9B9B96' }}>
+          <p className="text-xs font-mono mb-8" style={{ color: 'var(--text-secondary)' }}>
             {filtered.length} models in guide
           </p>
 
           {filtered.length === 0 ? (
             <div className="py-12 text-center">
-              <p className="font-serif-editorial tracking-editorial text-lg" style={{ color: '#F7F7F4' }}>
+              <p className="font-serif-editorial tracking-editorial text-lg" style={{ color: 'var(--text-primary)' }}>
                 No models match your filters
               </p>
-              <p className="text-sm mt-2" style={{ color: '#9B9B96' }}>
+              <p className="text-sm mt-2" style={{ color: 'var(--text-secondary)' }}>
                 Try adjusting your criteria, or ask us to source the vehicle you need.
               </p>
               <a

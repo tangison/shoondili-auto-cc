@@ -96,7 +96,7 @@ export const SERVICE_ICONS = [
   { key: 'document', label: 'Documentation', iconPath: '/assets/icons/document.svg' },
 ];
 
-export const CATALOGUE_MAKES = ['Nissan', 'Honda', 'Mazda', 'Volkswagen'];
+export const CATALOGUE_MAKES = ['Nissan', 'Honda', 'Mazda', 'Volkswagen', 'Audi'];
 
 export const MAKES = [
   'Toyota', 'Honda', 'Nissan', 'Mazda', 'Subaru', 'Mitsubishi', 'Suzuki',

@@ -6,6 +6,7 @@ import { ContactForm } from '@/components/contact-form';
 import { CatalogueCard } from '@/components/catalogue-card';
 import { ScrollReveal } from '@/components/scroll-reveal';
 import { SectionDivider } from '@/components/section-divider';
+import ModelDetailGallery from './gallery';
 
 export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }) {
   const { slug } = await params;
@@ -42,17 +43,16 @@ export default async function ModelDetailPage({ params }: { params: Promise<{ sl
     notFound();
   }
 
-  // Related models: same make, different entries
   const related = catalogue.filter(e => e.id !== entry.id && e.make === entry.make).slice(0, 3);
   const waUrl = getWhatsAppEnquireUrl(entry);
 
   return (
     <div>
       {/* Model header */}
-      <section className="py-24">
+      <section className="py-24 bg-canvas">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <ScrollReveal>
-            <Link href="/inventory" className="text-xs font-mono mb-6 inline-flex items-center transition-opacity hover:opacity-80" style={{ color: '#9B9B96' }}>
+            <Link href="/inventory" className="text-xs font-mono mb-6 inline-flex items-center transition-opacity hover:opacity-80" style={{ color: 'var(--text-secondary)' }}>
               <svg className="w-4 h-4 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
                 <path strokeLinecap="round" strokeLinejoin="round" d="M15 19l-7-7 7-7" />
               </svg>
@@ -60,59 +60,44 @@ export default async function ModelDetailPage({ params }: { params: Promise<{ sl
             </Link>
 
             <div className="flex items-baseline gap-4 mb-2">
-              <h1 className="font-serif-editorial tracking-editorial-tight text-3xl sm:text-4xl" style={{ color: '#F7F7F4', lineHeight: '1.1' }}>
+              <h1 className="font-serif-editorial tracking-editorial-tight text-3xl sm:text-4xl" style={{ color: 'var(--text-primary)', lineHeight: '1.1' }}>
                 {entry.make} {entry.model}
               </h1>
               <span
                 className="tag-pill"
-                style={{ backgroundColor: '#181818', color: '#F5B400', border: '1px solid rgba(245,180,0,0.3)' }}
+                style={{ backgroundColor: 'var(--surface-raised)', color: 'var(--brand-gold)', border: '1px solid var(--border-color)' }}
               >
                 Order from Japan
               </span>
             </div>
-            <p className="text-sm" style={{ color: '#9B9B96' }}>
+            <p className="text-sm" style={{ color: 'var(--text-secondary)' }}>
               {entry.year} · {entry.shape !== 'unspecified' ? entry.shape : ''}
             </p>
           </ScrollReveal>
         </div>
       </section>
 
-      {/* Gallery placeholder + details */}
-      <section className="py-12">
+      {/* Gallery + details */}
+      <section className="py-12 bg-surface-raised">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="grid lg:grid-cols-2 gap-12">
             {/* Gallery */}
             <ScrollReveal>
-              <div className="rounded-2xl overflow-hidden" style={{ backgroundColor: '#181818', border: '1px solid rgba(255,255,255,0.12)' }}>
-                {entry.images.length > 0 ? (
-                  <img src={entry.images[0]} alt={`${entry.make} ${entry.model} ${entry.year} — reference image`} className="w-full h-auto object-cover" />
-                ) : (
-                  <div className="h-64 flex items-center justify-center flex-col gap-3">
-                    <svg className="w-16 h-16" style={{ color: '#9B9B96' }} fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1}>
-                      <path strokeLinecap="round" strokeLinejoin="round" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M8 8h.01M12 12h.01" />
-                    </svg>
-                    <p className="text-xs font-mono" style={{ color: '#9B9B96' }}>Reference images to be added</p>
-                  </div>
-                )}
-                <p className="text-xs font-mono p-3" style={{ color: '#9B9B96' }}>
-                  Images show the model or generation for reference. The exact vehicle, colour, equipment and condition will be confirmed during sourcing.
-                </p>
-              </div>
+              <ModelDetailGallery images={entry.images} make={entry.make} model={entry.model} year={entry.year} />
             </ScrollReveal>
 
             {/* Details */}
             <ScrollReveal delay={200}>
               <div className="space-y-6">
                 {/* Price + WhatsApp CTA */}
-                <div className="rounded-2xl p-6" style={{ backgroundColor: '#111111', border: '1px solid rgba(255,255,255,0.12)' }}>
+                <div className="rounded-2xl p-6 bg-surface" style={{ border: '1px solid var(--border-color)' }}>
                   <div className="flex items-baseline gap-3 mb-2">
-                    <span className="text-2xl font-medium" style={{ color: '#F5B400' }}>
+                    <span className="text-2xl font-medium text-brand-gold">
                       {formatPriceNad(entry.priceNad)}
                     </span>
-                    <span className="text-sm font-mono" style={{ color: '#9B9B96' }}>starting estimate</span>
+                    <span className="text-sm font-mono" style={{ color: 'var(--text-secondary)' }}>starting estimate</span>
                   </div>
                   <PricingDisclaimer compact />
-                  {/* WhatsApp enquiry CTA */}
                   <div className="mt-4">
                     <a
                       href={waUrl}
@@ -123,63 +108,63 @@ export default async function ModelDetailPage({ params }: { params: Promise<{ sl
                       <WhatsAppIcon />
                       {entry.primaryCta}
                     </a>
-                    <p className="text-xs mt-2 text-center" style={{ color: '#9B9B96' }}>
+                    <p className="text-xs mt-2 text-center" style={{ color: 'var(--text-secondary)' }}>
                       We respond fastest on WhatsApp. This is a sourcing request, not a purchase agreement.
                     </p>
                   </div>
                 </div>
 
                 {/* Model identification */}
-                <div className="rounded-2xl p-6" style={{ backgroundColor: '#111111', border: '1px solid rgba(255,255,255,0.12)' }}>
-                  <h3 className="text-xs uppercase tracking-[0.15em] mb-4" style={{ color: '#F5B400' }}>
+                <div className="rounded-2xl p-6 bg-surface" style={{ border: '1px solid var(--border-color)' }}>
+                  <h3 className="text-xs uppercase tracking-[0.15em] mb-4 text-brand-gold">
                     Model Identification
                   </h3>
                   <div className="grid grid-cols-2 gap-4">
                     <div>
-                      <p className="text-xs" style={{ color: '#9B9B96' }}>Make</p>
-                      <p className="text-sm font-mono" style={{ color: '#F7F7F4' }}>{entry.make}</p>
+                      <p className="text-xs" style={{ color: 'var(--text-secondary)' }}>Make</p>
+                      <p className="text-sm font-mono" style={{ color: 'var(--text-primary)' }}>{entry.make}</p>
                     </div>
                     <div>
-                      <p className="text-xs" style={{ color: '#9B9B96' }}>Model</p>
-                      <p className="text-sm font-mono" style={{ color: '#F7F7F4' }}>{entry.model}</p>
+                      <p className="text-xs" style={{ color: 'var(--text-secondary)' }}>Model</p>
+                      <p className="text-sm font-mono" style={{ color: 'var(--text-primary)' }}>{entry.model}</p>
                     </div>
                     <div>
-                      <p className="text-xs" style={{ color: '#9B9B96' }}>Year</p>
-                      <p className="text-sm font-mono" style={{ color: '#F7F7F4' }}>{entry.year}</p>
+                      <p className="text-xs" style={{ color: 'var(--text-secondary)' }}>Year</p>
+                      <p className="text-sm font-mono" style={{ color: 'var(--text-primary)' }}>{entry.year}</p>
                     </div>
                     {entry.shape !== 'unspecified' && (
                       <div>
-                        <p className="text-xs" style={{ color: '#9B9B96' }}>Shape / Generation</p>
-                        <p className="text-sm font-mono" style={{ color: '#F7F7F4' }}>{entry.shape}</p>
+                        <p className="text-xs" style={{ color: 'var(--text-secondary)' }}>Shape / Generation</p>
+                        <p className="text-sm font-mono" style={{ color: 'var(--text-primary)' }}>{entry.shape}</p>
                       </div>
                     )}
                   </div>
-                  <p className="text-xs mt-4" style={{ color: '#9B9B96', lineHeight: '1.5' }}>
+                  <p className="text-xs mt-4" style={{ color: 'var(--text-secondary)', lineHeight: '1.5' }}>
                     Do not assume specific mileage, colour, transmission, fuel type, or equipment for this model unless confirmed during sourcing. Catalogue entries are model and price guides, not individual vehicle listings.
                   </p>
                 </div>
 
                 {/* How sourcing works */}
-                <div className="rounded-2xl p-6" style={{ backgroundColor: '#111111', border: '1px solid rgba(255,255,255,0.12)' }}>
-                  <h3 className="text-xs uppercase tracking-[0.15em] mb-4" style={{ color: '#F5B400' }}>
+                <div className="rounded-2xl p-6 bg-surface" style={{ border: '1px solid var(--border-color)' }}>
+                  <h3 className="text-xs uppercase tracking-[0.15em] mb-4 text-brand-gold">
                     How Sourcing Works
                   </h3>
                   <div className="space-y-3">
                     <div className="flex gap-3 items-start">
-                      <span className="w-6 h-6 rounded-full flex items-center justify-center text-xs font-mono shrink-0" style={{ backgroundColor: '#181818', color: '#F5B400', border: '1px solid rgba(255,255,255,0.12)' }}>1</span>
-                      <p className="text-xs" style={{ color: '#9B9B96', lineHeight: '1.5' }}>You request this model and share your budget and preferences.</p>
+                      <span className="w-6 h-6 rounded-full flex items-center justify-center text-xs font-mono shrink-0 bg-surface-raised text-brand-gold" style={{ border: '1px solid var(--border-color)' }}>1</span>
+                      <p className="text-xs" style={{ color: 'var(--text-secondary)', lineHeight: '1.5' }}>You request this model and share your budget and preferences.</p>
                     </div>
                     <div className="flex gap-3 items-start">
-                      <span className="w-6 h-6 rounded-full flex items-center justify-center text-xs font-mono shrink-0" style={{ backgroundColor: '#181818', color: '#F5B400', border: '1px solid rgba(255,255,255,0.12)' }}>2</span>
-                      <p className="text-xs" style={{ color: '#9B9B96', lineHeight: '1.5' }}>Shoondili searches Japanese suppliers for a suitable unit.</p>
+                      <span className="w-6 h-6 rounded-full flex items-center justify-center text-xs font-mono shrink-0 bg-surface-raised text-brand-gold" style={{ border: '1px solid var(--border-color)' }}>2</span>
+                      <p className="text-xs" style={{ color: 'var(--text-secondary)', lineHeight: '1.5' }}>Shoondili searches Japanese suppliers for a suitable unit.</p>
                     </div>
                     <div className="flex gap-3 items-start">
-                      <span className="w-6 h-6 rounded-full flex items-center justify-center text-xs font-mono shrink-0" style={{ backgroundColor: '#181818', color: '#F5B400', border: '1px solid rgba(255,255,255,0.12)' }}>3</span>
-                      <p className="text-xs" style={{ color: '#9B9B96', lineHeight: '1.5' }}>We send you vehicle details and a written quotation.</p>
+                      <span className="w-6 h-6 rounded-full flex items-center justify-center text-xs font-mono shrink-0 bg-surface-raised text-brand-gold" style={{ border: '1px solid var(--border-color)' }}>3</span>
+                      <p className="text-xs" style={{ color: 'var(--text-secondary)', lineHeight: '1.5' }}>We send you vehicle details and a written quotation.</p>
                     </div>
                     <div className="flex gap-3 items-start">
-                      <span className="w-6 h-6 rounded-full flex items-center justify-center text-xs font-mono shrink-0" style={{ backgroundColor: '#181818', color: '#F5B400', border: '1px solid rgba(255,255,255,0.12)' }}>4</span>
-                      <p className="text-xs" style={{ color: '#9B9B96', lineHeight: '1.5' }}>You review and approve before committing. No pressure.</p>
+                      <span className="w-6 h-6 rounded-full flex items-center justify-center text-xs font-mono shrink-0 bg-surface-raised text-brand-gold" style={{ border: '1px solid var(--border-color)' }}>4</span>
+                      <p className="text-xs" style={{ color: 'var(--text-secondary)', lineHeight: '1.5' }}>You review and approve before committing. No pressure.</p>
                     </div>
                   </div>
                 </div>
@@ -190,7 +175,7 @@ export default async function ModelDetailPage({ params }: { params: Promise<{ sl
       </section>
 
       {/* Pricing disclaimer */}
-      <section className="py-6">
+      <section className="py-6 bg-canvas">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <PricingDisclaimer />
         </div>
@@ -198,7 +183,7 @@ export default async function ModelDetailPage({ params }: { params: Promise<{ sl
 
       {/* Enquiry CTA */}
       <SectionDivider />
-      <section className="py-24">
+      <section className="py-24 bg-canvas">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <ScrollReveal>
             <ContactForm type="inventory" vehicleInfo={`${entry.make} ${entry.model} ${entry.year} (${formatPriceNad(entry.priceNad)} starting estimate)`} />
@@ -208,10 +193,10 @@ export default async function ModelDetailPage({ params }: { params: Promise<{ sl
 
       {/* Related models */}
       {related.length > 0 && (
-        <section className="py-12">
+        <section className="py-12 bg-surface-raised">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <ScrollReveal>
-              <h2 className="font-serif-editorial tracking-editorial-tight text-2xl mb-8" style={{ color: '#F7F7F4' }}>
+              <h2 className="font-serif-editorial tracking-editorial-tight text-2xl mb-8" style={{ color: 'var(--text-primary)' }}>
                 Related model guides
               </h2>
             </ScrollReveal>
