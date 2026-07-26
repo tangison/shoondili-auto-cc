@@ -68,27 +68,27 @@ export function ContactForm({ type = 'general', vehicleId, vehicleInfo }: Contac
   const whatsappHref = `${WHATSAPP_URL}?text=${buildWhatsAppMessage()}`;
 
   const inputStyle = {
-    backgroundColor: '#181818',
-    color: '#F7F7F4',
-    border: '1px solid rgba(255,255,255,0.12)',
+    backgroundColor: 'var(--surface-raised)',
+    color: 'var(--text-primary)',
+    border: '1px solid var(--border-color)',
     borderRadius: '9999px',
   };
 
   const labelStyle = {
-    color: '#9B9B96',
+    color: 'var(--text-secondary)',
     fontSize: '0.7rem',
     letterSpacing: '0.1em',
     textTransform: 'uppercase' as const,
   };
 
   return (
-    <div className="rounded-2xl p-6" style={{ backgroundColor: '#111111', border: '1px solid rgba(255,255,255,0.12)' }}>
-      <h3 className="font-serif-editorial tracking-editorial text-xl mb-2" style={{ color: '#F7F7F4' }}>
+    <div className="rounded-xl p-6" style={{ backgroundColor: 'var(--surface)', border: '1px solid var(--border-color)' }}>
+      <h3 className="font-serif-editorial tracking-editorial text-xl mb-2" style={{ color: 'var(--text-primary)' }}>
         {typeLabels[type]}
       </h3>
 
       {/* Sourcing disclaimer */}
-      <p className="text-xs mb-6" style={{ color: '#9B9B96', lineHeight: '1.5' }}>
+      <p className="text-xs mb-6" style={{ color: 'var(--text-secondary)', lineHeight: '1.5' }}>
         This is a vehicle sourcing request, not a vehicle reservation or purchase agreement. Shoondili will provide a written quotation before you commit.
       </p>
 
@@ -103,195 +103,88 @@ export function ContactForm({ type = 'general', vehicleId, vehicleInfo }: Contac
           <WhatsAppIcon />
           Send enquiry via WhatsApp
         </a>
-        <p className="text-xs mt-2 text-center" style={{ color: '#9B9B96' }}>
+        <p className="text-xs mt-2 text-center" style={{ color: 'var(--text-secondary)' }}>
           We respond fastest on WhatsApp. Tap to start a chat.
         </p>
       </div>
 
       {/* Optional form to compose message before sending */}
-      <div className="h-px w-full mb-6" style={{ backgroundColor: 'rgba(255,255,255,0.12)' }} />
+      <div className="h-px w-full mb-6" style={{ backgroundColor: 'var(--border-color)' }} />
 
-      <p className="text-xs uppercase tracking-widest mb-4" style={{ color: '#9B9B96' }}>
+      <p className="text-xs uppercase tracking-widest mb-4" style={{ color: 'var(--text-secondary)' }}>
         Compose your message first
       </p>
 
       <div className="space-y-4 mb-6">
-        {/* Name */}
         <div>
           <label htmlFor="wa-name" className="block mb-2" style={labelStyle}>Your Name</label>
-          <input
-            id="wa-name"
-            type="text"
-            value={formData.name}
-            onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-            className="w-full px-4 py-3 text-sm"
-            style={inputStyle}
-            placeholder="Your name"
-          />
+          <input id="wa-name" type="text" value={formData.name} onChange={(e) => setFormData({ ...formData, name: e.target.value })} className="w-full px-4 py-3 text-sm" style={inputStyle} placeholder="Your name" />
         </div>
-
-        {/* Phone / WhatsApp */}
         <div>
           <label htmlFor="wa-phone" className="block mb-2" style={labelStyle}>Phone or WhatsApp Number</label>
-          <input
-            id="wa-phone"
-            type="tel"
-            value={formData.phone}
-            onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
-            className="w-full px-4 py-3 text-sm"
-            style={inputStyle}
-            placeholder="Your WhatsApp or phone number"
-          />
+          <input id="wa-phone" type="tel" value={formData.phone} onChange={(e) => setFormData({ ...formData, phone: e.target.value })} className="w-full px-4 py-3 text-sm" style={inputStyle} placeholder="Your WhatsApp or phone number" />
         </div>
-
-        {/* Email — optional */}
         <div>
           <label htmlFor="wa-email" className="block mb-2" style={labelStyle}>Email (optional)</label>
-          <input
-            id="wa-email"
-            type="email"
-            value={formData.email}
-            onChange={(e) => setFormData({ ...formData, email: e.target.value })}
-            className="w-full px-4 py-3 text-sm"
-            style={inputStyle}
-            placeholder="Your email address"
-          />
+          <input id="wa-email" type="email" value={formData.email} onChange={(e) => setFormData({ ...formData, email: e.target.value })} className="w-full px-4 py-3 text-sm" style={inputStyle} placeholder="Your email address" />
         </div>
 
-        {/* Make */}
         {(type === 'import' || type === 'inventory' || type === 'general') && (
           <div>
             <label htmlFor="wa-make" className="block mb-2" style={labelStyle}>Preferred Make</label>
-            <select
-              id="wa-make"
-              value={formData.make}
-              onChange={(e) => setFormData({ ...formData, make: e.target.value })}
-              className="w-full px-4 py-3 text-sm"
-              style={inputStyle}
-            >
+            <select id="wa-make" value={formData.make} onChange={(e) => setFormData({ ...formData, make: e.target.value })} className="w-full px-4 py-3 text-sm" style={inputStyle}>
               <option value="">Any make</option>
-              {CATALOGUE_MAKES.map((make) => (
-                <option key={make} value={make}>{make}</option>
-              ))}
+              {CATALOGUE_MAKES.map((make) => (<option key={make} value={make}>{make}</option>))}
             </select>
           </div>
         )}
-
-        {/* Model */}
         {(type === 'import' || type === 'inventory' || type === 'general') && (
           <div>
             <label htmlFor="wa-model" className="block mb-2" style={labelStyle}>Preferred Model</label>
-            <input
-              id="wa-model"
-              type="text"
-              value={formData.model}
-              onChange={(e) => setFormData({ ...formData, model: e.target.value })}
-              className="w-full px-4 py-3 text-sm"
-              style={inputStyle}
-              placeholder="e.g. Note, Fit, Demio, Polo..."
-            />
+            <input id="wa-model" type="text" value={formData.model} onChange={(e) => setFormData({ ...formData, model: e.target.value })} className="w-full px-4 py-3 text-sm" style={inputStyle} placeholder="e.g. Note, Fit, Demio, Polo..." />
           </div>
         )}
-
-        {/* Year range */}
         {(type === 'import' || type === 'inventory' || type === 'general') && (
           <div>
             <label htmlFor="wa-year" className="block mb-2" style={labelStyle}>Preferred Year Range</label>
-            <input
-              id="wa-year"
-              type="text"
-              value={formData.yearRange}
-              onChange={(e) => setFormData({ ...formData, yearRange: e.target.value })}
-              className="w-full px-4 py-3 text-sm"
-              style={inputStyle}
-              placeholder="e.g. 2014–2018"
-            />
+            <input id="wa-year" type="text" value={formData.yearRange} onChange={(e) => setFormData({ ...formData, yearRange: e.target.value })} className="w-full px-4 py-3 text-sm" style={inputStyle} placeholder="e.g. 2014–2018" />
           </div>
         )}
-
-        {/* Budget */}
         <div>
           <label htmlFor="wa-budget" className="block mb-2" style={labelStyle}>Maximum Budget (NAD)</label>
-          <input
-            id="wa-budget"
-            type="text"
-            value={formData.budget}
-            onChange={(e) => setFormData({ ...formData, budget: e.target.value })}
-            className="w-full px-4 py-3 text-sm"
-            style={inputStyle}
-            placeholder="e.g. N$150,000"
-          />
+          <input id="wa-budget" type="text" value={formData.budget} onChange={(e) => setFormData({ ...formData, budget: e.target.value })} className="w-full px-4 py-3 text-sm" style={inputStyle} placeholder="e.g. N$150,000" />
         </div>
-
-        {/* Transmission preference — optional */}
         {(type === 'import' || type === 'inventory') && (
-          <div>
-            <label htmlFor="wa-transmission" className="block mb-2" style={labelStyle}>Transmission Preference (optional)</label>
-            <select
-              id="wa-transmission"
-              value={formData.transmission}
-              onChange={(e) => setFormData({ ...formData, transmission: e.target.value })}
-              className="w-full px-4 py-3 text-sm"
-              style={inputStyle}
-            >
-              <option value="">No preference</option>
-              <option value="Automatic">Automatic</option>
-              <option value="Manual">Manual</option>
-            </select>
-          </div>
+          <>
+            <div>
+              <label htmlFor="wa-transmission" className="block mb-2" style={labelStyle}>Transmission Preference (optional)</label>
+              <select id="wa-transmission" value={formData.transmission} onChange={(e) => setFormData({ ...formData, transmission: e.target.value })} className="w-full px-4 py-3 text-sm" style={inputStyle}>
+                <option value="">No preference</option>
+                <option value="Automatic">Automatic</option>
+                <option value="Manual">Manual</option>
+              </select>
+            </div>
+            <div>
+              <label htmlFor="wa-fuel" className="block mb-2" style={labelStyle}>Fuel Preference (optional)</label>
+              <select id="wa-fuel" value={formData.fuel} onChange={(e) => setFormData({ ...formData, fuel: e.target.value })} className="w-full px-4 py-3 text-sm" style={inputStyle}>
+                <option value="">No preference</option>
+                <option value="Petrol">Petrol</option>
+                <option value="Diesel">Diesel</option>
+                <option value="Hybrid">Hybrid</option>
+              </select>
+            </div>
+            <div>
+              <label htmlFor="wa-colour" className="block mb-2" style={labelStyle}>Colour Preference (optional)</label>
+              <input id="wa-colour" type="text" value={formData.colour} onChange={(e) => setFormData({ ...formData, colour: e.target.value })} className="w-full px-4 py-3 text-sm" style={inputStyle} placeholder="e.g. White, Silver, Black..." />
+            </div>
+          </>
         )}
-
-        {/* Fuel preference — optional */}
-        {(type === 'import' || type === 'inventory') && (
-          <div>
-            <label htmlFor="wa-fuel" className="block mb-2" style={labelStyle}>Fuel Preference (optional)</label>
-            <select
-              id="wa-fuel"
-              value={formData.fuel}
-              onChange={(e) => setFormData({ ...formData, fuel: e.target.value })}
-              className="w-full px-4 py-3 text-sm"
-              style={inputStyle}
-            >
-              <option value="">No preference</option>
-              <option value="Petrol">Petrol</option>
-              <option value="Diesel">Diesel</option>
-              <option value="Hybrid">Hybrid</option>
-            </select>
-          </div>
-        )}
-
-        {/* Colour preference — optional */}
-        {(type === 'import' || type === 'inventory') && (
-          <div>
-            <label htmlFor="wa-colour" className="block mb-2" style={labelStyle}>Colour Preference (optional)</label>
-            <input
-              id="wa-colour"
-              type="text"
-              value={formData.colour}
-              onChange={(e) => setFormData({ ...formData, colour: e.target.value })}
-              className="w-full px-4 py-3 text-sm"
-              style={inputStyle}
-              placeholder="e.g. White, Silver, Black..."
-            />
-          </div>
-        )}
-
-        {/* Message */}
         <div>
           <label htmlFor="wa-message" className="block mb-2" style={labelStyle}>Additional Details</label>
-          <textarea
-            id="wa-message"
-            rows={4}
-            value={formData.message}
-            onChange={(e) => setFormData({ ...formData, message: e.target.value })}
-            className="w-full px-4 py-3 text-sm"
-            style={{ ...inputStyle, borderRadius: '16px' }}
-            placeholder="Any extra information you want to share..."
-          />
+          <textarea id="wa-message" rows={4} value={formData.message} onChange={(e) => setFormData({ ...formData, message: e.target.value })} className="w-full px-4 py-3 text-sm" style={{ ...inputStyle, borderRadius: '16px' }} placeholder="Any extra information you want to share..." />
         </div>
       </div>
 
-      {/* Composed WhatsApp send button */}
       <a
         href={whatsappHref}
         target="_blank"
@@ -302,19 +195,14 @@ export function ContactForm({ type = 'general', vehicleId, vehicleInfo }: Contac
         Send composed message on WhatsApp
       </a>
 
-      {/* Secondary contact options */}
-      <div className="mt-6 pt-4" style={{ borderTop: '1px solid rgba(255,255,255,0.12)' }}>
-        <p className="text-xs mb-2" style={{ color: '#9B9B96' }}>
+      <div className="mt-6 pt-4" style={{ borderTop: '1px solid var(--border-color)' }}>
+        <p className="text-xs mb-2" style={{ color: 'var(--text-secondary)' }}>
           Prefer email or phone?
         </p>
-        <div className="flex flex-col sm:flex-row gap-3 text-xs font-mono" style={{ color: '#9B9B96' }}>
-          <a href={`mailto:${EMAIL}`} className="transition-colors hover:text-brand-gold" style={{ color: '#9B9B96' }}>
-            {EMAIL}
-          </a>
-          <span style={{ color: 'rgba(255,255,255,0.12)' }}>|</span>
-          <a href={`tel:+264812486557`} className="transition-colors hover:text-brand-gold" style={{ color: '#9B9B96' }}>
-            {PHONE}
-          </a>
+        <div className="flex flex-col sm:flex-row gap-3 text-xs font-mono" style={{ color: 'var(--text-secondary)' }}>
+          <a href={`mailto:${EMAIL}`} className="transition-colors hover:text-brand-gold" style={{ color: 'var(--text-secondary)' }}>{EMAIL}</a>
+          <span style={{ color: 'var(--border-color)' }}>|</span>
+          <a href={`tel:+264812486557`} className="transition-colors hover:text-brand-gold" style={{ color: 'var(--text-secondary)' }}>{PHONE}</a>
         </div>
       </div>
     </div>

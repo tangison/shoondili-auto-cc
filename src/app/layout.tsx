@@ -1,9 +1,11 @@
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import { Geist, Geist_Mono, Newsreader } from "next/font/google";
 import "./globals.css";
 import { Header } from "@/components/header";
 import { Footer } from "@/components/footer";
 import { FloatingWhatsApp } from "@/components/floating-whatsapp";
+import { ThemeProvider } from "@/components/theme-provider";
+import { GrainOverlay } from "@/components/grain-overlay";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -52,6 +54,16 @@ export const metadata: Metadata = {
   },
 };
 
+export const viewport: Viewport = {
+  themeColor: [
+    { media: '(prefers-color-scheme: dark)', color: '#0B0E0E' },
+    { media: '(prefers-color-scheme: light)', color: '#F1EDE4' },
+  ],
+  width: 'device-width',
+  initialScale: 1,
+  viewportFit: 'cover',
+};
+
 function JsonLd() {
   const localBusiness = {
     '@context': 'https://schema.org',
@@ -80,25 +92,55 @@ function JsonLd() {
   );
 }
 
+/* ─── Theme flash prevention script ─── */
+function ThemeScript() {
+  const script = `
+    (function() {
+      try {
+        var theme = localStorage.getItem('theme') || (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'dark');
+        if (theme === 'dark') {
+          document.documentElement.classList.add('dark');
+          document.documentElement.style.backgroundColor = '#0B0E0E';
+          document.documentElement.style.color = '#F4F0E7';
+        } else {
+          document.documentElement.classList.remove('dark');
+          document.documentElement.classList.add('light');
+          document.documentElement.style.backgroundColor = '#F1EDE4';
+          document.documentElement.style.color = '#151919';
+        }
+      } catch(e) {}
+    })();
+  `;
+  return <script dangerouslySetInnerHTML={{ __html: script }} />;
+}
+
 export default function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" suppressHydrationWarning className="dark">
+    <html lang="en" suppressHydrationWarning>
+      <head>
+        <ThemeScript />
+      </head>
       <body
-        className={`${geistSans.variable} ${geistMono.variable} ${newsreader.variable} antialiased bg-background text-foreground`}
-        style={{ backgroundColor: '#090909', color: '#F7F7F4' }}
+        className={`${geistSans.variable} ${geistMono.variable} ${newsreader.variable} antialiased`}
       >
-        <JsonLd />
-        <a href="#main-content" className="skip-to-content">Skip to main content</a>
-        <div className="min-h-screen flex flex-col relative">
-          <Header />
-          <main id="main-content" className="flex-1 relative z-10" tabIndex={-1}>{children}</main>
-          <Footer />
-          <FloatingWhatsApp />
-        </div>
+        <ThemeProvider>
+          <JsonLd />
+          <a href="#main-content" className="skip-to-content">Skip to main content</a>
+          <GrainOverlay />
+          <div className="min-h-screen flex flex-col relative bg-background text-foreground">
+            <Header />
+            {/* Spacer for fixed header */}
+            <div style={{ height: '88px' }} className="hidden lg:block" />
+            <div style={{ height: '72px' }} className="lg:hidden" />
+            <main id="main-content" className="flex-1 relative z-10" tabIndex={-1}>{children}</main>
+            <Footer />
+            <FloatingWhatsApp />
+          </div>
+        </ThemeProvider>
       </body>
     </html>
   );

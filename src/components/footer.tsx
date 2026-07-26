@@ -3,6 +3,18 @@
 import Link from 'next/link';
 import { FOOTER_LINKS, SITE_NAME, PHONE, EMAIL, LOCATION, WHATSAPP_URL, PHONE_RAW, PRICING_DISCLAIMER } from '@/lib/constants';
 import { useState } from 'react';
+import { ThemeToggle } from '@/components/theme-toggle';
+import { useTheme } from 'next-themes';
+import { useMounted } from '@/hooks/use-mounted';
+
+function FooterLogo() {
+  const { resolvedTheme } = useTheme();
+  const mounted = useMounted();
+  const src = mounted && resolvedTheme === 'light' ? '/brand/logo-light.svg' : '/brand/logo-dark.svg';
+  return (
+    <img src={src} alt="Shoondili Auto CC" className="h-10 w-auto" style={{ maxHeight: '40px' }} />
+  );
+}
 
 function WhatsAppIcon() {
   return (
@@ -50,43 +62,43 @@ export function Footer() {
   const [hoveredLink, setHoveredLink] = useState<string | null>(null);
 
   return (
-    <footer className="mt-auto" style={{ backgroundColor: '#090909' }}>
+    <footer className="mt-auto bg-canvas">
       {/* ─── Animated gold line divider ─── */}
-      <div className="relative h-1 w-full overflow-hidden" style={{ backgroundColor: 'rgba(255,255,255,0.06)' }}>
+      <div className="relative h-1 w-full overflow-hidden" style={{ backgroundColor: 'var(--border-color)' }}>
         <div
-          className="absolute inset-y-0 w-32"
+          className="absolute inset-y-0 w-24"
           style={{
-            backgroundColor: '#F5B400',
-            animation: 'footerGoldSlide 10s linear infinite',
+            backgroundColor: 'var(--brand-gold)',
+            animation: 'footerGoldSlide 12s linear infinite',
             borderRadius: '9999px',
           }}
         />
       </div>
 
       {/* ─── Hero-style contact banner — Collins editorial style ─── */}
-      <div className="py-20 sm:py-28 relative overflow-hidden">
-        {/* Subtle background pattern */}
-        <div className="absolute inset-0 opacity-[0.03]" style={{
-          backgroundImage: `radial-gradient(circle at 20% 50%, #F5B400 0%, transparent 50%), radial-gradient(circle at 80% 50%, #F5B400 0%, transparent 50%)`,
+      <div className="py-20 sm:py-28 relative overflow-hidden bg-surface-raised">
+        {/* Subtle petrol ambient light */}
+        <div className="absolute inset-0 opacity-[0.08]" style={{
+          backgroundImage: `radial-gradient(circle at 15% 40%, var(--petrol) 0%, transparent 50%), radial-gradient(circle at 85% 60%, var(--brand-gold) 0%, transparent 40%)`,
         }} />
 
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
           <div className="grid lg:grid-cols-5 gap-16 items-start">
             {/* Left: Big editorial statement — 3 columns */}
             <div className="lg:col-span-3">
-              <p className="text-xs uppercase tracking-[0.2em] mb-6" style={{ color: '#F5B400' }}>
+              <p className="text-xs uppercase tracking-[0.2em] mb-6 text-brand-gold">
                 Sourcing from Japan to Namibia
               </p>
               <h2
                 className="font-serif-editorial tracking-editorial-tight text-4xl sm:text-5xl lg:text-6xl mb-8"
-                style={{ color: '#F7F7F4', lineHeight: '1.05' }}
+                style={{ color: 'var(--text-primary)', lineHeight: '1.05' }}
               >
                 Let us find<br />your next vehicle
               </h2>
-              <p className="text-sm mb-4 max-w-lg" style={{ color: '#9B9B96', lineHeight: '1.7' }}>
+              <p className="text-sm mb-4 max-w-lg" style={{ color: 'var(--text-secondary)', lineHeight: '1.7' }}>
                 Shoondili is a Japanese vehicle sourcing and import service based in Walvis Bay, Namibia. We search, source, ship, and assist with clearance and registration. You review every detail before committing.
               </p>
-              <p className="text-sm mb-10 max-w-lg" style={{ color: '#9B9B96', lineHeight: '1.7' }}>
+              <p className="text-sm mb-10 max-w-lg" style={{ color: 'var(--text-secondary)', lineHeight: '1.7' }}>
                 We respond fastest on WhatsApp. Reach us any time to start your enquiry.
               </p>
               <a
@@ -101,89 +113,89 @@ export function Footer() {
             </div>
 
             {/* Right: Contact cards — 2 columns */}
-            <div className="lg:col-span-2 space-y-4">
+            <div className="lg:col-span-2 space-y-3">
               <a
                 href={`${WHATSAPP_URL}?text=${encodeURIComponent('Hi Shoondili, I\'d like to enquire about sourcing a vehicle from Japan.')}`}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="flex items-center gap-4 p-5 rounded-2xl transition-all duration-300 group"
+                className="flex items-center gap-4 p-4 rounded-xl transition-all duration-300 group"
                 style={{
-                  backgroundColor: '#111111',
-                  border: '1px solid rgba(255,255,255,0.12)',
+                  backgroundColor: 'var(--surface)',
+                  border: '1px solid var(--border-color)',
                 }}
               >
                 <div
-                  className="flex items-center justify-center w-12 h-12 rounded-full shrink-0 transition-colors duration-300"
-                  style={{ backgroundColor: '#181818', color: '#F5B400' }}
+                  className="flex items-center justify-center w-11 h-11 rounded-full shrink-0 transition-colors duration-300"
+                  style={{ backgroundColor: 'var(--surface-raised)', color: 'var(--brand-gold)' }}
                 >
                   <WhatsAppIcon />
                 </div>
                 <div className="flex-1">
-                  <p className="text-xs uppercase tracking-[0.15em]" style={{ color: '#F5B400' }}>WhatsApp</p>
-                  <p className="text-sm font-mono mt-1" style={{ color: '#F7F7F4' }}>{PHONE}</p>
+                  <p className="text-xs uppercase tracking-[0.15em] text-brand-gold">WhatsApp</p>
+                  <p className="text-sm font-mono mt-1" style={{ color: 'var(--text-primary)' }}>{PHONE}</p>
                 </div>
                 <ArrowRightIcon />
               </a>
 
               <a
                 href={`tel:+${PHONE_RAW}`}
-                className="flex items-center gap-4 p-5 rounded-2xl transition-all duration-300 group"
+                className="flex items-center gap-4 p-4 rounded-xl transition-all duration-300 group"
                 style={{
-                  backgroundColor: '#111111',
-                  border: '1px solid rgba(255,255,255,0.12)',
+                  backgroundColor: 'var(--surface)',
+                  border: '1px solid var(--border-color)',
                 }}
               >
                 <div
-                  className="flex items-center justify-center w-12 h-12 rounded-full shrink-0"
-                  style={{ backgroundColor: '#181818', color: '#F5B400' }}
+                  className="flex items-center justify-center w-11 h-11 rounded-full shrink-0"
+                  style={{ backgroundColor: 'var(--surface-raised)', color: 'var(--brand-gold)' }}
                 >
                   <PhoneIcon />
                 </div>
                 <div className="flex-1">
-                  <p className="text-xs uppercase tracking-[0.15em]" style={{ color: '#F5B400' }}>Phone</p>
-                  <p className="text-sm font-mono mt-1" style={{ color: '#F7F7F4' }}>{PHONE}</p>
+                  <p className="text-xs uppercase tracking-[0.15em] text-brand-gold">Phone</p>
+                  <p className="text-sm font-mono mt-1" style={{ color: 'var(--text-primary)' }}>{PHONE}</p>
                 </div>
                 <ArrowRightIcon />
               </a>
 
               <a
                 href={`mailto:${EMAIL}`}
-                className="flex items-center gap-4 p-5 rounded-2xl transition-all duration-300 group"
+                className="flex items-center gap-4 p-4 rounded-xl transition-all duration-300 group"
                 style={{
-                  backgroundColor: '#111111',
-                  border: '1px solid rgba(255,255,255,0.12)',
+                  backgroundColor: 'var(--surface)',
+                  border: '1px solid var(--border-color)',
                 }}
               >
                 <div
-                  className="flex items-center justify-center w-12 h-12 rounded-full shrink-0"
-                  style={{ backgroundColor: '#181818', color: '#F5B400' }}
+                  className="flex items-center justify-center w-11 h-11 rounded-full shrink-0"
+                  style={{ backgroundColor: 'var(--surface-raised)', color: 'var(--brand-gold)' }}
                 >
                   <EmailIcon />
                 </div>
                 <div className="flex-1">
-                  <p className="text-xs uppercase tracking-[0.15em]" style={{ color: '#F5B400' }}>Email</p>
-                  <p className="text-sm font-mono mt-1" style={{ color: '#F7F7F4' }}>{EMAIL}</p>
+                  <p className="text-xs uppercase tracking-[0.15em] text-brand-gold">Email</p>
+                  <p className="text-sm font-mono mt-1" style={{ color: 'var(--text-primary)' }}>{EMAIL}</p>
                 </div>
                 <ArrowRightIcon />
               </a>
 
               <div
-                className="flex items-center gap-4 p-5 rounded-2xl"
+                className="flex items-center gap-4 p-4 rounded-xl"
                 style={{
-                  backgroundColor: '#111111',
-                  border: '1px solid rgba(255,255,255,0.12)',
+                  backgroundColor: 'var(--surface)',
+                  border: '1px solid var(--border-color)',
                 }}
               >
                 <div
-                  className="flex items-center justify-center w-12 h-12 rounded-full shrink-0"
-                  style={{ backgroundColor: '#181818', color: '#F5B400' }}
+                  className="flex items-center justify-center w-11 h-11 rounded-full shrink-0"
+                  style={{ backgroundColor: 'var(--surface-raised)', color: 'var(--petrol-light)' }}
                 >
                   <MapPinIcon />
                 </div>
                 <div className="flex-1">
-                  <p className="text-xs uppercase tracking-[0.15em]" style={{ color: '#F5B400' }}>Location</p>
-                  <p className="text-sm font-mono mt-1" style={{ color: '#F7F7F4' }}>{LOCATION}</p>
-                  <p className="text-xs mt-1" style={{ color: '#9B9B96' }}>Viewings by arrangement. No showroom.</p>
+                  <p className="text-xs uppercase tracking-[0.15em] text-petrol-light">Location</p>
+                  <p className="text-sm font-mono mt-1" style={{ color: 'var(--text-primary)' }}>{LOCATION}</p>
+                  <p className="text-xs mt-1" style={{ color: 'var(--text-secondary)' }}>Viewings by arrangement. No showroom.</p>
                 </div>
               </div>
             </div>
@@ -192,35 +204,30 @@ export function Footer() {
       </div>
 
       {/* ─── Navigation grid ─── */}
-      <div className="h-px w-full" style={{ backgroundColor: 'rgba(255,255,255,0.08)' }} />
+      <div className="h-px w-full bg-canvas-soft" />
 
-      <div className="py-16 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div className="py-16 bg-canvas-soft max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-10">
           {/* Brand column */}
           <div>
-            <Link href="/" aria-label="Shoondili Auto CC home" className="mb-6 block logo-glow">
-              <img
-                src="/brand/logo-dark.svg"
-                alt="Shoondili Auto CC"
-                className="h-10 w-auto"
-                style={{ maxHeight: '40px' }}
-              />
+            <Link href="/" aria-label="Shoondili Auto CC home" className="mb-6 block">
+              <FooterLogo />
             </Link>
-            <p className="text-xs" style={{ color: '#9B9B96', lineHeight: '1.7' }}>
+            <p className="text-xs" style={{ color: 'var(--text-secondary)', lineHeight: '1.7' }}>
               Japanese vehicle sourcing and import service from Walvis Bay, Namibia. We connect Namibian buyers with Japanese vehicle suppliers.
             </p>
           </div>
 
           {/* Vehicles */}
           <div>
-            <h3 className="text-xs uppercase tracking-[0.15em] mb-5" style={{ color: '#F5B400' }}>Vehicles</h3>
+            <h3 className="text-xs uppercase tracking-[0.15em] mb-5 text-brand-gold">Vehicles</h3>
             <ul className="space-y-3">
               {FOOTER_LINKS.vehicles.map((link) => (
                 <li key={link.href}>
                   <Link
                     href={link.href}
                     className="text-sm transition-all duration-300 hover:translate-x-1"
-                    style={{ color: hoveredLink === link.href ? '#F5B400' : '#9B9B96' }}
+                    style={{ color: hoveredLink === link.href ? 'var(--brand-gold)' : 'var(--text-secondary)' }}
                     onMouseEnter={() => setHoveredLink(link.href)}
                     onMouseLeave={() => setHoveredLink(null)}
                   >
@@ -233,14 +240,14 @@ export function Footer() {
 
           {/* Company */}
           <div>
-            <h3 className="text-xs uppercase tracking-[0.15em] mb-5" style={{ color: '#F5B400' }}>Company</h3>
+            <h3 className="text-xs uppercase tracking-[0.15em] mb-5 text-brand-gold">Company</h3>
             <ul className="space-y-3">
               {FOOTER_LINKS.company.map((link) => (
                 <li key={link.href}>
                   <Link
                     href={link.href}
                     className="text-sm transition-all duration-300 hover:translate-x-1"
-                    style={{ color: hoveredLink === link.href ? '#F5B400' : '#9B9B96' }}
+                    style={{ color: hoveredLink === link.href ? 'var(--brand-gold)' : 'var(--text-secondary)' }}
                     onMouseEnter={() => setHoveredLink(link.href)}
                     onMouseLeave={() => setHoveredLink(null)}
                   >
@@ -253,14 +260,14 @@ export function Footer() {
 
           {/* Legal */}
           <div>
-            <h3 className="text-xs uppercase tracking-[0.15em] mb-5" style={{ color: '#F5B400' }}>Legal</h3>
+            <h3 className="text-xs uppercase tracking-[0.15em] mb-5 text-brand-gold">Legal</h3>
             <ul className="space-y-3">
               {FOOTER_LINKS.legal.map((link) => (
                 <li key={link.href}>
                   <Link
                     href={link.href}
                     className="text-sm transition-all duration-300 hover:translate-x-1"
-                    style={{ color: hoveredLink === link.href ? '#F5B400' : '#9B9B96' }}
+                    style={{ color: hoveredLink === link.href ? 'var(--brand-gold)' : 'var(--text-secondary)' }}
                     onMouseEnter={() => setHoveredLink(link.href)}
                     onMouseLeave={() => setHoveredLink(null)}
                   >
@@ -274,30 +281,34 @@ export function Footer() {
       </div>
 
       {/* ─── Pricing disclaimer ─── */}
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-8">
-        <div className="rounded-2xl p-4" style={{ backgroundColor: '#111111', border: '1px solid rgba(245,180,0,0.15)' }}>
-          <p className="text-xs" style={{ color: '#9B9B96', lineHeight: '1.6' }}>
+      <div className="bg-canvas-soft max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-8">
+        <div className="rounded-2xl p-4" style={{ backgroundColor: 'var(--surface)', border: '1px solid rgba(242,183,5,0.15)' }}>
+          <p className="text-xs" style={{ color: 'var(--text-secondary)', lineHeight: '1.6' }}>
             {PRICING_DISCLAIMER}
           </p>
         </div>
       </div>
 
       {/* ─── Bottom bar ─── */}
-      <div className="h-px w-full" style={{ backgroundColor: 'rgba(255,255,255,0.08)' }} />
+      <div className="h-px w-full" style={{ backgroundColor: 'var(--border-color)' }} />
 
-      <div className="py-6 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div className="py-6 bg-canvas-soft max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex flex-col sm:flex-row items-center justify-between gap-4">
-          <p className="text-xs font-mono" style={{ color: '#9B9B96' }}>
+          <p className="text-xs font-mono" style={{ color: 'var(--text-secondary)' }}>
             &copy; {new Date().getFullYear()} {SITE_NAME}. All rights reserved.
           </p>
-          <p className="text-xs font-mono" style={{ color: '#9B9B96' }}>
+
+          {/* Theme toggle */}
+          <ThemeToggle />
+
+          <p className="text-xs font-mono" style={{ color: 'var(--text-secondary)' }}>
             Made by{' '}
             <a
               href="https://studio.tangison.com"
               target="_blank"
               rel="noopener noreferrer"
               className="transition-colors duration-200 hover:text-brand-gold"
-              style={{ color: '#9B9B96' }}
+              style={{ color: 'var(--text-secondary)' }}
             >
               Tangison Studio
             </a>

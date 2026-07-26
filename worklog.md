@@ -35,3 +35,37 @@ Stage Summary:
 - Creative Collins-inspired footer
 - WhatsApp-first architecture throughout
 - Pricing disclaimer near every price
+---
+Task ID: 1
+Agent: Main Agent
+Task: Complete Midnight Port redesign of Shoondili Auto CC website
+
+Work Log:
+- Installed next-themes and created ThemeProvider component
+- Replaced entire CSS color system from flat #090909/#111111/#181818 to Midnight Port palette (#0B0E0E, #101414, #151A1A, #1B2121 with petrol/copper/gold accents)
+- Added full light theme (.light class) with warm canvas (#F1EDE4) and inverted colors
+- Created ThemeToggle component (Light/Dark segmented control) positioned in footer bottom bar
+- Rebuilt header as floating sticky nav with glass material, 20px margin from viewport edge, 20px radius
+- Logo is mathematically centred using left:50% translateX(-50%) 
+- Menu trigger moved to LEFT side (mobile) — two-stroke custom SVG icon that morphs into X
+- Desktop nav: Left links + Center logo + Right links (About, Contact, Search, Order from Japan)
+- Mobile: Left menu trigger + Center logo + Right (Search, WhatsApp)
+- Mobile menu panel opens below floating header as glass panel, not full-screen overlay
+- Added grain overlay for background depth (2-4% opacity, fractal noise SVG pattern)
+- Created glass utility classes (.glass, .glass-subtle) with backdrop blur, inner highlight, shadows
+- Section rhythm: alternating bg-canvas, bg-canvas-soft, bg-surface-raised backgrounds with petrol ambient light
+- Footer: Collins-style editorial CTA section, theme toggle in bottom bar, FooterLogo with theme-aware rendering
+- All components updated to use CSS custom properties (var(--canvas), var(--brand-gold), etc.)
+- Added theme flash prevention script in layout head
+- Added viewport metadata with theme-color for both dark (#0B0E0E) and light (#F1EDE4)
+- Fixed duplicate key errors (/imports appears twice in nav)
+- Fixed lint errors (set-state-in-effect) by using useSyncExternalStore-based useMounted hook
+- Mobile menu uses invisible class when closed (not just opacity/pointer-events)
+
+Stage Summary:
+- Complete Midnight Port visual system implemented (dark default + full light theme)
+- Floating navigation bar with glass material, centred logo, left-aligned menu trigger
+- Grain overlay for background depth, glass effects on nav/menu/search
+- Theme toggle (Light | Dark) in footer bottom bar with smooth 200ms transition
+- All components migrated from hardcoded hex colors to CSS custom properties
+- No console errors, lint clean, dev server running successfully

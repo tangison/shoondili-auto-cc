@@ -18,8 +18,8 @@ export function FloatingWhatsApp() {
       rel="noopener noreferrer"
       className="fixed bottom-6 right-6 z-40 whatsapp-float-pulse flex items-center justify-center w-14 h-14 rounded-full transition-transform duration-200 hover:scale-[0.96]"
       style={{
-        backgroundColor: '#F5B400',
-        color: '#090909',
+        backgroundColor: 'var(--brand-gold)',
+        color: 'var(--canvas)',
       }}
       aria-label="Chat on WhatsApp"
     >

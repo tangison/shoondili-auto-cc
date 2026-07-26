@@ -2,6 +2,8 @@
 
 import Link from 'next/link';
 import Image from 'next/image';
+import { useTheme } from 'next-themes';
+import { useMounted } from '@/hooks/use-mounted';
 import { WHATSAPP_URL } from '@/lib/constants';
 
 function WhatsAppIcon() {
@@ -13,40 +15,39 @@ function WhatsAppIcon() {
 }
 
 export function HeroSection() {
+  const { resolvedTheme } = useTheme();
+  const mounted = useMounted();
+  const logoSrc = mounted && resolvedTheme === 'light' ? '/brand/logo-light.svg' : '/brand/logo-dark.svg';
+
   return (
-    <section className="relative min-h-[85vh] flex items-center overflow-hidden" style={{ backgroundColor: '#090909' }}>
+    <section className="relative min-h-[85vh] flex items-center overflow-hidden bg-canvas">
       {/* Background image */}
       <div className="absolute inset-0">
         <Image
           src="/assets/backgrounds/audi-rs7-motion-hero.webp"
           alt="Vehicle in motion, atmospheric artwork"
           fill
-          className="object-cover opacity-35"
+          className="object-cover opacity-30"
           priority
           sizes="100vw"
         />
-        <div className="absolute inset-0" style={{ background: 'linear-gradient(to right, #090909 40%, transparent 70%)' }} />
-        <div className="absolute inset-0" style={{ background: 'linear-gradient(to top, #090909 10%, transparent 50%)' }} />
+        <div className="absolute inset-0" style={{ background: 'linear-gradient(to right, var(--canvas) 40%, transparent 70%)' }} />
+        <div className="absolute inset-0" style={{ background: 'linear-gradient(to top, var(--canvas) 10%, transparent 50%)' }} />
       </div>
 
-      {/* Animated gold accent line */}
-      <div
-        className="absolute left-16 bottom-0 top-0 w-px"
-        style={{
-          backgroundColor: '#F5B400',
-          opacity: 0.15,
-          animation: 'goldLineDraw 1.5s cubic-bezier(0.16,1,0.3,1) 300ms forwards',
-        }}
-      />
+      {/* Subtle petrol ambient light */}
+      <div className="absolute inset-0 opacity-[0.06]" style={{
+        backgroundImage: 'radial-gradient(circle at 20% 60%, var(--petrol) 0%, transparent 50%)',
+      }} />
 
       {/* Content */}
       <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 w-full">
         <div className="max-w-xl py-24 lg:py-32">
           {/* Large logo */}
-          <div className="mb-10 logo-glow">
+          <div className="mb-10">
             <Link href="/" aria-label="Shoondili Auto CC home">
               <img
-                src="/brand/logo-dark.svg"
+                src={logoSrc}
                 alt="Shoondili Auto CC"
                 className="h-20 sm:h-24 w-auto"
                 style={{ maxHeight: '96px' }}
@@ -56,12 +57,12 @@ export function HeroSection() {
 
           <h1
             className="font-serif-editorial tracking-editorial-tight text-3xl sm:text-4xl lg:text-5xl mb-6"
-            style={{ color: '#F7F7F4', lineHeight: '1.1' }}
+            style={{ color: 'var(--text-primary)', lineHeight: '1.1' }}
           >
             Japanese vehicles, sourced with honesty.
           </h1>
 
-          <p className="text-lg mb-10" style={{ color: '#9B9B96', lineHeight: '1.7' }}>
+          <p className="text-lg mb-10" style={{ color: 'var(--text-secondary)', lineHeight: '1.7' }}>
             Shoondili is a vehicle sourcing and import service based in Walvis Bay, Namibia. We search Japanese auctions and suppliers for the vehicle you want, provide a written quotation, and coordinate shipping, clearance, and registration. You review every detail before committing.
           </p>
 
@@ -86,7 +87,7 @@ export function HeroSection() {
             </a>
           </div>
 
-          <p className="text-xs font-mono mt-6" style={{ color: '#9B9B96', letterSpacing: '0.1em' }}>
+          <p className="text-xs font-mono mt-6" style={{ color: 'var(--text-secondary)', letterSpacing: '0.1em' }}>
             No showroom · Viewings by arrangement · Written quotation before commitment
           </p>
         </div>

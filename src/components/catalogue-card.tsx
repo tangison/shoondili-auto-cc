@@ -2,7 +2,6 @@
 
 import Link from 'next/link';
 import { CatalogueEntry, formatPriceNad, getWhatsAppEnquireUrl } from '@/lib/inventory-data';
-import { ScrollReveal } from '@/components/scroll-reveal';
 import { PricingDisclaimer } from '@/components/pricing-disclaimer';
 
 function WhatsAppIcon() {
@@ -18,13 +17,13 @@ export function CatalogueCard({ entry }: { entry: CatalogueEntry }) {
 
   return (
     <div
-      className="rounded-2xl p-5 transition-all duration-300 hover:translate-y-[-2px]"
-      style={{ backgroundColor: '#111111', border: '1px solid rgba(255,255,255,0.12)' }}
+      className="rounded-xl p-5 transition-all duration-300 hover:translate-y-[-2px] bg-surface"
+      style={{ border: '1px solid var(--border-color)' }}
     >
       {/* Model image placeholder */}
       <div
-        className="rounded-xl overflow-hidden mb-4 aspect-[16/10]"
-        style={{ backgroundColor: '#181818' }}
+        className="rounded-lg overflow-hidden mb-4 aspect-[16/10]"
+        style={{ backgroundColor: 'var(--surface-raised)' }}
       >
         {entry.images.length > 0 ? (
           <img
@@ -34,7 +33,7 @@ export function CatalogueCard({ entry }: { entry: CatalogueEntry }) {
           />
         ) : (
           <div className="w-full h-full flex items-center justify-center">
-            <svg className="w-12 h-12" style={{ color: '#9B9B96' }} fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1}>
+            <svg className="w-12 h-12" style={{ color: 'var(--text-secondary)' }} fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1}>
               <path strokeLinecap="round" strokeLinejoin="round" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M8 8h.01M12 12h.01" />
             </svg>
           </div>
@@ -42,21 +41,21 @@ export function CatalogueCard({ entry }: { entry: CatalogueEntry }) {
       </div>
 
       {/* Model name and year */}
-      <p className="font-serif-editorial tracking-editorial-tight text-lg" style={{ color: '#F7F7F4' }}>
+      <p className="font-serif-editorial tracking-editorial-tight text-lg" style={{ color: 'var(--text-primary)' }}>
         {entry.make} {entry.model}
       </p>
-      <p className="text-xs font-mono mt-1" style={{ color: '#9B9B96' }}>
+      <p className="text-xs font-mono mt-1" style={{ color: 'var(--text-secondary)' }}>
         {entry.year} · {entry.shape !== 'unspecified' ? entry.shape : ''}
       </p>
 
       {/* Price — with order_from_japan tag */}
       <div className="mt-3 flex items-baseline gap-2">
-        <p className="text-lg font-medium" style={{ color: '#F5B400' }}>
+        <p className="text-lg font-medium text-brand-gold">
           {formatPriceNad(entry.priceNad)}
         </p>
         <span
           className="tag-pill"
-          style={{ backgroundColor: '#181818', color: '#9B9B96', border: '1px solid rgba(255,255,255,0.12)' }}
+          style={{ backgroundColor: 'var(--surface-raised)', color: 'var(--petrol-light)', border: '1px solid var(--border-color)' }}
         >
           Order from Japan
         </span>

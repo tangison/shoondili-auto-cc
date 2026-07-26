@@ -3,7 +3,7 @@
 import { useState, useEffect, useRef } from 'react';
 import Link from 'next/link';
 import { CATALOGUE_MAKES } from '@/lib/constants';
-import { catalogue, formatPriceNad, getWhatsAppEnquireUrl, CatalogueEntry } from '@/lib/inventory-data';
+import { catalogue, formatPriceNad, getWhatsAppEnquireUrl } from '@/lib/inventory-data';
 import { WHATSAPP_URL, PRICING_DISCLAIMER } from '@/lib/constants';
 
 interface SearchOverlayProps {
@@ -31,9 +31,7 @@ export function SearchOverlay({ open, onClose }: SearchOverlayProps) {
   };
 
   useEffect(() => {
-    if (open) {
-      setTimeout(() => inputRef.current?.focus(), 400);
-    }
+    if (open) setTimeout(() => inputRef.current?.focus(), 400);
   }, [open]);
 
   useEffect(() => {
@@ -61,7 +59,7 @@ export function SearchOverlay({ open, onClose }: SearchOverlayProps) {
       <div
         className="absolute inset-0"
         style={{
-          backgroundColor: 'rgba(9,9,9,0.95)',
+          backgroundColor: 'var(--surface-glass)',
           backdropFilter: 'blur(24px)',
           WebkitBackdropFilter: 'blur(24px)',
         }}
@@ -71,15 +69,12 @@ export function SearchOverlay({ open, onClose }: SearchOverlayProps) {
       {/* Search panel */}
       <div
         className="relative z-10 max-w-3xl mx-auto h-full flex flex-col px-4 sm:px-6 pt-6"
-        style={{
-          animation: 'searchSlideIn 500ms cubic-bezier(0.16,1,0.3,1) forwards',
-        }}
+        style={{ animation: 'searchSlideIn 500ms cubic-bezier(0.16,1,0.3,1) forwards' }}
       >
         {/* Close button */}
         <button
           onClick={onClose}
-          className="absolute top-4 right-4 p-2 rounded-full transition-all duration-300 hover:scale-105"
-          style={{ color: '#9B9B96' }}
+          className="absolute top-4 right-4 p-2 rounded-full transition-all duration-300 hover:scale-105 btn-ghost"
           aria-label="Close search"
         >
           <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
@@ -88,16 +83,16 @@ export function SearchOverlay({ open, onClose }: SearchOverlayProps) {
         </button>
 
         {/* Search title */}
-        <h2 className="font-serif-editorial tracking-editorial-tight text-3xl mb-2" style={{ color: '#F7F7F4' }}>
+        <h2 className="font-serif-editorial tracking-editorial-tight text-3xl mb-2" style={{ color: 'var(--text-primary)' }}>
           Find a model
         </h2>
-        <p className="text-xs mb-6" style={{ color: '#9B9B96' }}>
+        <p className="text-xs mb-6" style={{ color: 'var(--text-secondary)' }}>
           Search our model and price guide. These are sourcing estimates, not stock vehicles.
         </p>
 
         {/* Search input */}
         <div className="relative mb-6">
-          <svg className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="#9B9B96" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round">
+          <svg className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="var(--text-secondary)" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round">
             <circle cx="11" cy="11" r="7" />
             <path d="M21 21l-4.35-4.35" />
           </svg>
@@ -109,24 +104,24 @@ export function SearchOverlay({ open, onClose }: SearchOverlayProps) {
             placeholder="Search by make, model, year..."
             className="w-full pl-12 pr-4 py-4 text-sm rounded-full"
             style={{
-              backgroundColor: '#181818',
-              color: '#F7F7F4',
-              border: '1px solid rgba(255,255,255,0.12)',
+              backgroundColor: 'var(--surface-raised)',
+              color: 'var(--text-primary)',
+              border: '1px solid var(--border-color)',
             }}
           />
         </div>
 
         {/* Make filter pills */}
         <div className="mb-6">
-          <p className="text-xs uppercase tracking-[0.15em] mb-3" style={{ color: '#9B9B96' }}>Make</p>
+          <p className="text-xs uppercase tracking-[0.15em] mb-3" style={{ color: 'var(--text-secondary)' }}>Make</p>
           <div className="flex flex-wrap gap-2">
             <button
               onClick={() => setSelectedMake('')}
               className="px-4 py-2 text-xs font-mono rounded-full transition-all duration-300"
               style={{
-                backgroundColor: selectedMake === '' ? '#F5B400' : '#181818',
-                color: selectedMake === '' ? '#090909' : '#9B9B96',
-                border: '1px solid rgba(255,255,255,0.12)',
+                backgroundColor: selectedMake === '' ? 'var(--brand-gold)' : 'var(--surface-raised)',
+                color: selectedMake === '' ? 'var(--canvas)' : 'var(--text-secondary)',
+                border: '1px solid var(--border-color)',
               }}
             >
               All
@@ -137,9 +132,9 @@ export function SearchOverlay({ open, onClose }: SearchOverlayProps) {
                 onClick={() => setSelectedMake(selectedMake === make ? '' : make)}
                 className="px-4 py-2 text-xs font-mono rounded-full transition-all duration-300"
                 style={{
-                  backgroundColor: selectedMake === make ? '#F5B400' : '#181818',
-                  color: selectedMake === make ? '#090909' : '#9B9B96',
-                  border: '1px solid rgba(255,255,255,0.12)',
+                  backgroundColor: selectedMake === make ? 'var(--brand-gold)' : 'var(--surface-raised)',
+                  color: selectedMake === make ? 'var(--canvas)' : 'var(--text-secondary)',
+                  border: '1px solid var(--border-color)',
                 }}
               >
                 {make}
@@ -152,10 +147,10 @@ export function SearchOverlay({ open, onClose }: SearchOverlayProps) {
         <div className="flex-1 overflow-y-auto custom-scrollbar">
           {filtered.length === 0 ? (
             <div className="py-12 text-center">
-              <p className="font-serif-editorial tracking-editorial text-lg" style={{ color: '#F7F7F4' }}>
+              <p className="font-serif-editorial tracking-editorial text-lg" style={{ color: 'var(--text-primary)' }}>
                 No models found
               </p>
-              <p className="text-sm mt-2" style={{ color: '#9B9B96' }}>
+              <p className="text-sm mt-2" style={{ color: 'var(--text-secondary)' }}>
                 Try different search terms, or chat with us about what you need.
               </p>
               <a
@@ -175,15 +170,15 @@ export function SearchOverlay({ open, onClose }: SearchOverlayProps) {
                   <Link
                     href={`/inventory/${entry.slug}`}
                     onClick={onClose}
-                    className="flex items-center gap-4 p-4 rounded-2xl transition-all duration-300 hover:translate-x-1"
-                    style={{ backgroundColor: '#111111', border: '1px solid rgba(255,255,255,0.12)' }}
+                    className="flex items-center gap-4 p-4 rounded-xl transition-all duration-300 hover:translate-x-1"
+                    style={{ backgroundColor: 'var(--surface)', border: '1px solid var(--border-color)' }}
                   >
-                    {/* Model thumbnail placeholder */}
-                    <div className="w-16 h-16 rounded-xl overflow-hidden shrink-0 flex items-center justify-center" style={{ backgroundColor: '#181818' }}>
+                    {/* Model thumbnail */}
+                    <div className="w-16 h-16 rounded-lg overflow-hidden shrink-0 flex items-center justify-center" style={{ backgroundColor: 'var(--surface-raised)' }}>
                       {entry.images.length > 0 ? (
                         <img src={entry.images[0]} alt={`${entry.make} ${entry.model}`} className="w-full h-full object-cover" />
                       ) : (
-                        <svg className="w-6 h-6" style={{ color: '#9B9B96' }} fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1}>
+                        <svg className="w-6 h-6" style={{ color: 'var(--text-secondary)' }} fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1}>
                           <path strokeLinecap="round" strokeLinejoin="round" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M8 8h.01M12 12h.01" />
                         </svg>
                       )}
@@ -191,26 +186,26 @@ export function SearchOverlay({ open, onClose }: SearchOverlayProps) {
 
                     {/* Model info */}
                     <div className="flex-1 min-w-0">
-                      <p className="font-serif-editorial tracking-editorial text-base" style={{ color: '#F7F7F4' }}>
+                      <p className="font-serif-editorial tracking-editorial text-base" style={{ color: 'var(--text-primary)' }}>
                         {entry.make} {entry.model}
                       </p>
-                      <p className="text-xs font-mono" style={{ color: '#9B9B96' }}>
+                      <p className="text-xs font-mono" style={{ color: 'var(--text-secondary)' }}>
                         {entry.year} · {entry.shape !== 'unspecified' ? entry.shape : 'Order from Japan'}
                       </p>
                     </div>
 
                     {/* Price + WhatsApp */}
                     <div className="shrink-0 text-right">
-                      <p className="text-sm font-medium" style={{ color: '#F5B400' }}>
+                      <p className="text-sm font-medium text-brand-gold">
                         {formatPriceNad(entry.priceNad)}
                       </p>
-                      <p className="text-xs font-mono mt-0.5" style={{ color: '#9B9B96' }}>starting estimate</p>
+                      <p className="text-xs font-mono mt-0.5" style={{ color: 'var(--text-secondary)' }}>starting estimate</p>
                       <a
                         href={getWhatsAppEnquireUrl(entry)}
                         target="_blank"
                         rel="noopener noreferrer"
-                        className="inline-flex items-center gap-1 mt-1 text-xs font-mono transition-colors"
-                        style={{ color: '#9B9B96' }}
+                        className="inline-flex items-center gap-1 mt-1 text-xs font-mono transition-colors hover-text-gold"
+                        style={{ color: 'var(--text-secondary)' }}
                       >
                         <WhatsAppSmallIcon />
                         {entry.primaryCta}
@@ -224,8 +219,8 @@ export function SearchOverlay({ open, onClose }: SearchOverlayProps) {
         </div>
 
         {/* Keyboard hint */}
-        <div className="py-2 text-xs font-mono" style={{ color: '#9B9B96' }}>
-          Press <kbd style={{ backgroundColor: '#181818', border: '1px solid rgba(255,255,255,0.12)', padding: '2px 8px', borderRadius: '9999px' }}>ESC</kbd> to close
+        <div className="py-2 text-xs font-mono" style={{ color: 'var(--text-secondary)' }}>
+          Press <kbd style={{ backgroundColor: 'var(--surface-raised)', border: '1px solid var(--border-color)', padding: '2px 8px', borderRadius: '9999px' }}>ESC</kbd> to close
         </div>
       </div>
     </div>
