@@ -1,0 +1,5 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 96" fill="none" role="img" aria-label="Gold route line">
+  <path d="M12 69C185 69 197 24 359 24C523 24 551 72 719 72C883 72 946 28 1188 28" stroke="#F5B400" stroke-width="3" stroke-linecap="round"/>
+  <circle cx="12" cy="69" r="7" fill="#090909" stroke="#F5B400" stroke-width="3"/>
+  <circle cx="1188" cy="28" r="7" fill="#090909" stroke="#F5B400" stroke-width="3"/>
+</svg>
