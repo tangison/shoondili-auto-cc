@@ -2,6 +2,8 @@ export const SITE_NAME = 'Shoondili Auto CC';
 export const SITE_DESCRIPTION = 'Vehicle sourcing and sales from Walvis Bay, Namibia. Japanese imports, local inventory, and finance guidance.';
 export const SITE_URL = 'https://shoondili.com';
 export const PHONE = '081 248 6557';
+export const PHONE_RAW = '264812486557';
+export const WHATSAPP_URL = 'https://wa.me/264812486557';
 export const EMAIL = 'shoondiliconsultant7@gmail.com';
 export const LOCATION = 'Walvis Bay, Namibia';
 
