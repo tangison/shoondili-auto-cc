@@ -23,13 +23,16 @@ export function HeroSection() {
       {/* Content */}
       <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 w-full">
         <div className="max-w-xl py-24 lg:py-32">
-          {/* Logo */}
+          {/* Logo — use the actual SVG file, never a custom wordmark */}
           <div className="mb-8">
-            <object data="/brand/logo-dark.svg" type="image/svg+xml" className="h-16 w-auto" aria-label="Shoondili Auto CC">
-              <span className="font-serif-editorial tracking-editorial-tight text-4xl" style={{ color: '#F7F7F4' }}>
-                Shoondili Auto CC
-              </span>
-            </object>
+            <Link href="/" aria-label="Shoondili Auto CC home">
+              <img
+                src="/brand/logo-dark.svg"
+                alt="Shoondili Auto CC"
+                className="h-16 w-auto"
+                style={{ maxHeight: '64px' }}
+              />
+            </Link>
           </div>
 
           <h1

@@ -91,9 +91,10 @@ export default function RootLayout({
         style={{ backgroundColor: '#090909', color: '#F7F7F4' }}
       >
         <JsonLd />
+        <a href="#main-content" className="skip-to-content">Skip to main content</a>
         <div className="min-h-screen flex flex-col relative">
           <Header />
-          <main className="flex-1 relative z-10">{children}</main>
+          <main id="main-content" className="flex-1 relative z-10" tabIndex={-1}>{children}</main>
           <Footer />
         </div>
       </body>

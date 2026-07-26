@@ -10,9 +10,14 @@ export function Footer() {
           {/* Brand column */}
           <div>
             <div className="mb-4">
-              <object data="/brand/logo-dark.svg" type="image/svg+xml" className="h-10 w-auto" aria-label={SITE_NAME}>
-                <span className="font-serif-editorial tracking-editorial text-lg" style={{ color: '#F7F7F4' }}>{SITE_NAME}</span>
-              </object>
+              <Link href="/" aria-label="Shoondili Auto CC home">
+                <img
+                  src="/brand/logo-dark.svg"
+                  alt="Shoondili Auto CC"
+                  className="h-10 w-auto"
+                  style={{ maxHeight: '40px' }}
+                />
+              </Link>
             </div>
             <p className="text-sm text-brand-muted mb-4" style={{ color: '#9B9B96', lineHeight: '1.6' }}>
               Vehicle sourcing and sales from Walvis Bay, Namibia.

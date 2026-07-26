@@ -156,6 +156,38 @@
   .font-serif-editorial {
     font-family: var(--font-instrument-serif), 'Newsreader', Georgia, serif;
   }
+  .hover-text-gold:hover {
+    color: #F5B400;
+  }
+  .hover-text-gold:focus-visible {
+    color: #F5B400;
+    outline: 2px solid #F5B400;
+    outline-offset: 2px;
+  }
+}
+
+/* Global focus-visible for custom interactive elements */
+*:focus-visible {
+  outline: 2px solid #F5B400;
+  outline-offset: 2px;
+}
+
+/* Skip-to-content link */
+.skip-to-content {
+  position: absolute;
+  top: -100px;
+  left: 0;
+  z-index: 200;
+  padding: 0.5rem 1rem;
+  background: #F5B400;
+  color: #090909;
+  font-weight: 600;
+  font-size: 0.875rem;
+  border-radius: 4px;
+  transition: top 200ms;
+}
+.skip-to-content:focus {
+  top: 1rem;
 }
 
 /* Scroll animation classes */
@@ -182,15 +214,21 @@
   color: #F7F7F4;
   border-radius: 4px;
   border: 1px solid rgba(255,255,255,0.12);
-  transition: transform 200ms;
+  transition: transform 200ms, filter 200ms;
 }
 
 .btn-flat:hover {
   transform: scale(0.98);
+  filter: brightness(1.05);
 }
 
 .btn-flat:active {
-  transform: scale(0.98);
+  transform: scale(0.96);
+}
+
+.btn-flat:focus-visible {
+  outline: 2px solid #F5B400;
+  outline-offset: 2px;
 }
 
 /* Tag/badge styles */
@@ -232,30 +270,4 @@
   }
 }
 
-/* Ambient background motion */
-.ambient-gradient {
-  position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  pointer-events: none;
-  z-index: 0;
-  background: radial-gradient(ellipse at 20% 50%, rgba(245,180,0,0.03) 0%, transparent 70%);
-  animation: ambient-shift 20s ease-in-out infinite alternate;
-}
 
-@keyframes ambient-shift {
-  0% {
-    background-position: 0% 50%;
-  }
-  100% {
-    background-position: 100% 50%;
-  }
-}
-
-@media (prefers-reduced-motion: reduce) {
-  .ambient-gradient {
-    animation: none;
-  }
-}

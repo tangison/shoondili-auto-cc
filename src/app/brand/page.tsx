@@ -35,18 +35,24 @@ export default function BrandPage() {
             <ScrollReveal delay={100}>
               <div className="rounded-lg p-6" style={{ backgroundColor: '#090909', border: '1px solid rgba(255,255,255,0.12)' }}>
                 <p className="text-xs uppercase tracking-widest mb-4" style={{ color: '#9B9B96' }}>On dark surfaces</p>
-                <object data="/brand/logo-dark.svg" type="image/svg+xml" className="h-20 w-auto" aria-label={`${SITE_NAME} logo dark variant`}>
-                  <span style={{ color: '#F7F7F4' }}>{SITE_NAME}</span>
-                </object>
+                <img
+                  src="/brand/logo-dark.svg"
+                  alt="Shoondili Auto CC logo dark variant"
+                  className="h-20 w-auto"
+                  style={{ maxHeight: '80px' }}
+                />
               </div>
             </ScrollReveal>
 
             <ScrollReveal delay={200}>
               <div className="rounded-lg p-6" style={{ backgroundColor: '#F7F7F4', border: '1px solid rgba(255,255,255,0.12)' }}>
                 <p className="text-xs uppercase tracking-widest mb-4" style={{ color: '#2F3437' }}>On light surfaces</p>
-                <object data="/brand/logo-light.svg" type="image/svg+xml" className="h-20 w-auto" aria-label={`${SITE_NAME} logo light variant`}>
-                  <span style={{ color: '#2F3437' }}>{SITE_NAME}</span>
-                </object>
+                <img
+                  src="/brand/logo-light.svg"
+                  alt="Shoondili Auto CC logo light variant"
+                  className="h-20 w-auto"
+                  style={{ maxHeight: '80px' }}
+                />
               </div>
             </ScrollReveal>
           </div>

@@ -53,9 +53,11 @@ export function FAQAccordion({ categoryFilter }: { categoryFilter?: string }) {
               style={{ backgroundColor: '#111111', border: '1px solid rgba(255,255,255,0.12)' }}
             >
               <button
-                className="w-full p-4 text-left flex items-center justify-between"
+                id={`faq-button-${index}`}
+                className="w-full p-4 text-left flex items-center justify-between focus-visible:outline focus-visible:outline-2 focus-visible:outline-[#F5B400] focus-visible:outline-offset-2"
                 onClick={() => setOpenIndex(isOpen ? null : index)}
                 aria-expanded={isOpen}
+                aria-controls={`faq-panel-${index}`}
               >
                 <span className="text-sm" style={{ color: '#F7F7F4' }}>{item.question}</span>
                 <svg
@@ -70,7 +72,12 @@ export function FAQAccordion({ categoryFilter }: { categoryFilter?: string }) {
                 </svg>
               </button>
               {isOpen && (
-                <div className="px-4 pb-4">
+                <div
+                  id={`faq-panel-${index}`}
+                  role="region"
+                  aria-labelledby={`faq-button-${index}`}
+                  className="px-4 pb-4"
+                >
                   <p className="text-sm" style={{ color: '#9B9B96', lineHeight: '1.6' }}>
                     {item.answer}
                   </p>
