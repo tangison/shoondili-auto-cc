@@ -23,3 +23,9 @@
 | 19 | Finance disclaimer | Finance page | Browser snapshot | "SHOONDILI IS NOT A LENDER" badge present, disclaimer text | Finance page content verified | 2026-07-27 | Pass |
 | 20 | Inventory filters | /inventory page | Browser snapshot | Make, body type, fuel, transmission, status, year, price, mileage filters | Combobox elements verified | 2026-07-27 | Pass |
 | 21 | Import process 9 steps | /imports page | Browser snapshot | All 9 steps rendered with descriptions | Steps 1-9 visible with titles and descriptions | 2026-07-27 | Pass |
+| 22 | Fix header SVG logo | header.tsx, hero-section.tsx, footer.tsx, brand/page.tsx | Replace <object> and custom wordmark with <img src="/brand/logo-dark.svg"> | Actual SHOONDILI wordmark renders via SVG file | Browser shows image "Shoondili Auto CC" in header | 2026-07-27 | Pass |
+| 23 | Hallmark audit | All custom components | Agent audit | 4 critical, 6 major, 5 minor findings | AI nav, AI footer, scroll-reveal, token improvisation flagged | 2026-07-27 | Pass |
+| 24 | Impeccable audit | All pages and components | Agent audit | 14/20 score, 6 P0, 8 P1, 6 P2, 4 P3 | Focus-visible, ARIA, contrast, token bypass flagged | 2026-07-27 | Pass |
+| 25 | Fix focus-visible + hover-text-gold | globals.css, layout.tsx, faq-accordion.tsx | Add global focus-visible ring, .hover-text-gold CSS class, skip-to-content link, FAQ aria-controls | Interactive elements now have gold focus rings | Lint passes, browser verified | 2026-07-27 | Pass |
+| 26 | Push to GitHub | tangison/shoondili-auto-cc | git push | Repository created and code pushed | https://github.com/tangison/shoondili-auto-cc | 2026-07-27 | Pass |
+| 27 | Deploy to Vercel | shoondili.vercel.app | vercel --prod + alias | Production build succeeded, 32 pages generated | https://shoondili.vercel.app (SSO-protected team; visible in dashboard) | 2026-07-27 | Pass |
