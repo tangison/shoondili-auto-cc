@@ -1,30 +1,29 @@
 import { notFound } from 'next/navigation';
 import Link from 'next/link';
-import { vehicles, getVehicleBySlug, getRelatedVehicles } from '@/lib/inventory-data';
-import { StatusBadge } from '@/components/status-badge';
+import { catalogue, getCatalogueBySlug, formatPriceNad, getWhatsAppEnquireUrl } from '@/lib/inventory-data';
+import { PricingDisclaimer } from '@/components/pricing-disclaimer';
 import { ContactForm } from '@/components/contact-form';
-import { VehicleCard } from '@/components/vehicle-card';
+import { CatalogueCard } from '@/components/catalogue-card';
 import { ScrollReveal } from '@/components/scroll-reveal';
 import { SectionDivider } from '@/components/section-divider';
-import { WHATSAPP_URL } from '@/lib/constants';
 
 export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }) {
   const { slug } = await params;
-  const vehicle = getVehicleBySlug(slug);
-  if (!vehicle) return { title: 'Vehicle Not Found | Shoondili Auto CC' };
+  const entry = getCatalogueBySlug(slug);
+  if (!entry) return { title: 'Model Not Found | Shoondili Auto CC' };
   return {
-    title: `${vehicle.make} ${vehicle.model} ${vehicle.year} | Shoondili Auto CC`,
-    description: `${vehicle.make} ${vehicle.model} ${vehicle.variant || ''} ${vehicle.year} available in Walvis Bay, Namibia. ${vehicle.fuel}, ${vehicle.transmission}, ${new Intl.NumberFormat('en-NA').format(vehicle.mileage)} km.`,
+    title: `${entry.make} ${entry.model} ${entry.year} | Shoondili Auto CC`,
+    description: `${entry.make} ${entry.model} ${entry.year} — starting from ${formatPriceNad(entry.priceNad)}. Sourcing estimate for importing from Japan. Request this model and Shoondili will provide a written quotation.`,
     openGraph: {
-      title: `${vehicle.make} ${vehicle.model} ${vehicle.year} | Shoondili Auto CC`,
-      description: `${vehicle.make} ${vehicle.model} available in Walvis Bay. Contact Shoondili for details.`,
+      title: `${entry.make} ${entry.model} ${entry.year} | Shoondili Auto CC`,
+      description: `Request this model. Shoondili sources vehicles from Japan to Namibia.`,
       type: 'website',
     },
   };
 }
 
 export function generateStaticParams() {
-  return vehicles.map(v => ({ slug: v.slug }));
+  return catalogue.map(entry => ({ slug: entry.slug }));
 }
 
 function WhatsAppIcon() {
@@ -35,43 +34,45 @@ function WhatsAppIcon() {
   );
 }
 
-export default async function VehicleDetailPage({ params }: { params: Promise<{ slug: string }> }) {
+export default async function ModelDetailPage({ params }: { params: Promise<{ slug: string }> }) {
   const { slug } = await params;
-  const vehicle = getVehicleBySlug(slug);
+  const entry = getCatalogueBySlug(slug);
 
-  if (!vehicle) {
+  if (!entry) {
     notFound();
   }
 
-  const related = getRelatedVehicles(vehicle);
-  const formatPrice = (n: number) => new Intl.NumberFormat('en-NA', { style: 'currency', currency: 'NAD', maximumFractionDigits: 0 }).format(n);
-
-  const whatsappMessage = encodeURIComponent(
-    `Hi Shoondili, I'm interested in the ${vehicle.make} ${vehicle.model} ${vehicle.year} (${formatPrice(vehicle.price)}). Could you provide more details?`
-  );
+  // Related models: same make, different entries
+  const related = catalogue.filter(e => e.id !== entry.id && e.make === entry.make).slice(0, 3);
+  const waUrl = getWhatsAppEnquireUrl(entry);
 
   return (
     <div>
-      {/* Vehicle header */}
+      {/* Model header */}
       <section className="py-24">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <ScrollReveal>
-            <Link href="/inventory" className="text-xs font-mono mb-6 inline-flex items-center hover:opacity-80 transition-opacity" style={{ color: '#9B9B96' }}>
+            <Link href="/inventory" className="text-xs font-mono mb-6 inline-flex items-center transition-opacity hover:opacity-80" style={{ color: '#9B9B96' }}>
               <svg className="w-4 h-4 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
                 <path strokeLinecap="round" strokeLinejoin="round" d="M15 19l-7-7 7-7" />
               </svg>
-              Back to inventory
+              Back to Models & Prices
             </Link>
 
             <div className="flex items-baseline gap-4 mb-2">
               <h1 className="font-serif-editorial tracking-editorial-tight text-3xl sm:text-4xl" style={{ color: '#F7F7F4', lineHeight: '1.1' }}>
-                {vehicle.make} {vehicle.model}
+                {entry.make} {entry.model}
               </h1>
-              <StatusBadge status={vehicle.status} />
+              <span
+                className="tag-pill"
+                style={{ backgroundColor: '#181818', color: '#F5B400', border: '1px solid rgba(245,180,0,0.3)' }}
+              >
+                Order from Japan
+              </span>
             </div>
-            {vehicle.variant && (
-              <p className="text-sm mb-4" style={{ color: '#9B9B96' }}>{vehicle.variant}</p>
-            )}
+            <p className="text-sm" style={{ color: '#9B9B96' }}>
+              {entry.year} · {entry.shape !== 'unspecified' ? entry.shape : ''}
+            </p>
           </ScrollReveal>
         </div>
       </section>
@@ -82,18 +83,19 @@ export default async function VehicleDetailPage({ params }: { params: Promise<{ 
           <div className="grid lg:grid-cols-2 gap-12">
             {/* Gallery */}
             <ScrollReveal>
-              <div className="rounded-lg overflow-hidden" style={{ backgroundColor: '#181818', border: '1px solid rgba(255,255,255,0.12)' }}>
-                {vehicle.images.length > 0 ? (
-                  <img src={vehicle.images[0]} alt={`${vehicle.make} ${vehicle.model}`} className="w-full h-auto object-cover" />
+              <div className="rounded-2xl overflow-hidden" style={{ backgroundColor: '#181818', border: '1px solid rgba(255,255,255,0.12)' }}>
+                {entry.images.length > 0 ? (
+                  <img src={entry.images[0]} alt={`${entry.make} ${entry.model} ${entry.year} — reference image`} className="w-full h-auto object-cover" />
                 ) : (
-                  <div className="h-64 flex items-center justify-center">
+                  <div className="h-64 flex items-center justify-center flex-col gap-3">
                     <svg className="w-16 h-16" style={{ color: '#9B9B96' }} fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1}>
-                      <path strokeLinecap="round" strokeLinejoin="round" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M8 8h.01M12 12h.01M16 16h.01" />
+                      <path strokeLinecap="round" strokeLinejoin="round" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M8 8h.01M12 12h.01" />
                     </svg>
+                    <p className="text-xs font-mono" style={{ color: '#9B9B96' }}>Reference images to be added</p>
                   </div>
                 )}
                 <p className="text-xs font-mono p-3" style={{ color: '#9B9B96' }}>
-                  {vehicle.images.length > 0 ? `${vehicle.images.length} images available` : 'Images will be added upon availability'}
+                  Images show the model or generation for reference. The exact vehicle, colour, equipment and condition will be confirmed during sourcing.
                 </p>
               </div>
             </ScrollReveal>
@@ -102,181 +104,122 @@ export default async function VehicleDetailPage({ params }: { params: Promise<{ 
             <ScrollReveal delay={200}>
               <div className="space-y-6">
                 {/* Price + WhatsApp CTA */}
-                <div className="rounded-lg p-6" style={{ backgroundColor: '#111111', border: '1px solid rgba(255,255,255,0.12)' }}>
+                <div className="rounded-2xl p-6" style={{ backgroundColor: '#111111', border: '1px solid rgba(255,255,255,0.12)' }}>
                   <div className="flex items-baseline gap-3 mb-2">
                     <span className="text-2xl font-medium" style={{ color: '#F5B400' }}>
-                      {formatPrice(vehicle.price)}
+                      {formatPriceNad(entry.priceNad)}
                     </span>
-                    {vehicle.monthlyEstimate && (
-                      <span className="text-sm font-mono" style={{ color: '#9B9B96' }}>
-                        est. {formatPrice(vehicle.monthlyEstimate)}/mo*
-                      </span>
-                    )}
+                    <span className="text-sm font-mono" style={{ color: '#9B9B96' }}>starting estimate</span>
                   </div>
-                  {vehicle.monthlyEstimate && (
-                    <p className="text-xs font-mono" style={{ color: '#9B9B96' }}>
-                      * Indicative estimate only. Actual monthly payment depends on approved finance terms. Shoondili does not offer finance or guarantee this figure.
-                    </p>
-                  )}
+                  <PricingDisclaimer compact />
                   {/* WhatsApp enquiry CTA */}
                   <div className="mt-4">
                     <a
-                      href={`${WHATSAPP_URL}?text=${whatsappMessage}`}
+                      href={waUrl}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="w-full px-6 py-3 text-sm font-mono inline-flex items-center justify-center gap-2 transition-all duration-200 hover:scale-[0.98]"
-                      style={{
-                        backgroundColor: '#F5B400',
-                        color: '#090909',
-                        borderRadius: '4px',
-                      }}
+                      className="btn-gold w-full px-6 py-4 text-sm font-mono inline-flex items-center justify-center gap-3"
                     >
                       <WhatsAppIcon />
-                      Enquire about this vehicle on WhatsApp
+                      {entry.primaryCta}
                     </a>
                     <p className="text-xs mt-2 text-center" style={{ color: '#9B9B96' }}>
-                      We respond fastest on WhatsApp.
+                      We respond fastest on WhatsApp. This is a sourcing request, not a purchase agreement.
                     </p>
                   </div>
                 </div>
 
-                {/* Key specs */}
-                <div className="rounded-lg p-6" style={{ backgroundColor: '#111111', border: '1px solid rgba(255,255,255,0.12)' }}>
-                  <h3 className="text-xs uppercase tracking-widest mb-4" style={{ color: '#F5B400' }}>
-                    Specifications
+                {/* Model identification */}
+                <div className="rounded-2xl p-6" style={{ backgroundColor: '#111111', border: '1px solid rgba(255,255,255,0.12)' }}>
+                  <h3 className="text-xs uppercase tracking-[0.15em] mb-4" style={{ color: '#F5B400' }}>
+                    Model Identification
                   </h3>
                   <div className="grid grid-cols-2 gap-4">
                     <div>
+                      <p className="text-xs" style={{ color: '#9B9B96' }}>Make</p>
+                      <p className="text-sm font-mono" style={{ color: '#F7F7F4' }}>{entry.make}</p>
+                    </div>
+                    <div>
+                      <p className="text-xs" style={{ color: '#9B9B96' }}>Model</p>
+                      <p className="text-sm font-mono" style={{ color: '#F7F7F4' }}>{entry.model}</p>
+                    </div>
+                    <div>
                       <p className="text-xs" style={{ color: '#9B9B96' }}>Year</p>
-                      <p className="text-sm font-mono" style={{ color: '#F7F7F4' }}>{vehicle.year}</p>
+                      <p className="text-sm font-mono" style={{ color: '#F7F7F4' }}>{entry.year}</p>
                     </div>
-                    <div>
-                      <p className="text-xs" style={{ color: '#9B9B96' }}>Mileage</p>
-                      <p className="text-sm font-mono" style={{ color: '#F7F7F4' }}>{new Intl.NumberFormat('en-NA').format(vehicle.mileage)} km</p>
-                    </div>
-                    <div>
-                      <p className="text-xs" style={{ color: '#9B9B96' }}>Transmission</p>
-                      <p className="text-sm font-mono" style={{ color: '#F7F7F4' }}>{vehicle.transmission}</p>
-                    </div>
-                    <div>
-                      <p className="text-xs" style={{ color: '#9B9B96' }}>Fuel</p>
-                      <p className="text-sm font-mono" style={{ color: '#F7F7F4' }}>{vehicle.fuel}</p>
-                    </div>
-                    <div>
-                      <p className="text-xs" style={{ color: '#9B9B96' }}>Body Type</p>
-                      <p className="text-sm font-mono" style={{ color: '#F7F7F4' }}>{vehicle.bodyType}</p>
-                    </div>
-                    {vehicle.colour && (
+                    {entry.shape !== 'unspecified' && (
                       <div>
-                        <p className="text-xs" style={{ color: '#9B9B96' }}>Colour</p>
-                        <p className="text-sm font-mono" style={{ color: '#F7F7F4' }}>{vehicle.colour}</p>
+                        <p className="text-xs" style={{ color: '#9B9B96' }}>Shape / Generation</p>
+                        <p className="text-sm font-mono" style={{ color: '#F7F7F4' }}>{entry.shape}</p>
                       </div>
                     )}
                   </div>
+                  <p className="text-xs mt-4" style={{ color: '#9B9B96', lineHeight: '1.5' }}>
+                    Do not assume specific mileage, colour, transmission, fuel type, or equipment for this model unless confirmed during sourcing. Catalogue entries are model and price guides, not individual vehicle listings.
+                  </p>
                 </div>
 
-                {/* Features */}
-                {vehicle.features.length > 0 && (
-                  <div className="rounded-lg p-6" style={{ backgroundColor: '#111111', border: '1px solid rgba(255,255,255,0.12)' }}>
-                    <h3 className="text-xs uppercase tracking-widest mb-4" style={{ color: '#F5B400' }}>
-                      Features
-                    </h3>
-                    <ul className="space-y-2">
-                      {vehicle.features.map((feature, i) => (
-                        <li key={i} className="text-sm flex items-center gap-2" style={{ color: '#F7F7F4' }}>
-                          <span className="w-1 h-1 rounded-full" style={{ backgroundColor: '#F5B400' }} />
-                          {feature}
-                        </li>
-                      ))}
-                    </ul>
-                  </div>
-                )}
-
-                {/* Import info */}
-                {vehicle.importInfo && (
-                  <div className="rounded-lg p-6" style={{ backgroundColor: '#111111', border: '1px solid rgba(255,255,255,0.12)' }}>
-                    <h3 className="text-xs uppercase tracking-widest mb-4" style={{ color: '#F5B400' }}>
-                      Import Information
-                    </h3>
-                    <div className="space-y-3">
-                      <div>
-                        <p className="text-xs" style={{ color: '#9B9B96' }}>Sourced From</p>
-                        <p className="text-sm font-mono" style={{ color: '#F7F7F4' }}>{vehicle.importInfo.sourcedFrom}</p>
-                      </div>
-                      {vehicle.importInfo.auctionHouse && (
-                        <div>
-                          <p className="text-xs" style={{ color: '#9B9B96' }}>Auction House</p>
-                          <p className="text-sm font-mono" style={{ color: '#F7F7F4' }}>{vehicle.importInfo.auctionHouse}</p>
-                        </div>
-                      )}
-                      {vehicle.importInfo.arrivalDate && (
-                        <div>
-                          <p className="text-xs" style={{ color: '#9B9B96' }}>Expected Arrival</p>
-                          <p className="text-sm font-mono" style={{ color: '#F7F7F4' }}>{vehicle.importInfo.arrivalDate}</p>
-                        </div>
-                      )}
+                {/* How sourcing works */}
+                <div className="rounded-2xl p-6" style={{ backgroundColor: '#111111', border: '1px solid rgba(255,255,255,0.12)' }}>
+                  <h3 className="text-xs uppercase tracking-[0.15em] mb-4" style={{ color: '#F5B400' }}>
+                    How Sourcing Works
+                  </h3>
+                  <div className="space-y-3">
+                    <div className="flex gap-3 items-start">
+                      <span className="w-6 h-6 rounded-full flex items-center justify-center text-xs font-mono shrink-0" style={{ backgroundColor: '#181818', color: '#F5B400', border: '1px solid rgba(255,255,255,0.12)' }}>1</span>
+                      <p className="text-xs" style={{ color: '#9B9B96', lineHeight: '1.5' }}>You request this model and share your budget and preferences.</p>
+                    </div>
+                    <div className="flex gap-3 items-start">
+                      <span className="w-6 h-6 rounded-full flex items-center justify-center text-xs font-mono shrink-0" style={{ backgroundColor: '#181818', color: '#F5B400', border: '1px solid rgba(255,255,255,0.12)' }}>2</span>
+                      <p className="text-xs" style={{ color: '#9B9B96', lineHeight: '1.5' }}>Shoondili searches Japanese suppliers for a suitable unit.</p>
+                    </div>
+                    <div className="flex gap-3 items-start">
+                      <span className="w-6 h-6 rounded-full flex items-center justify-center text-xs font-mono shrink-0" style={{ backgroundColor: '#181818', color: '#F5B400', border: '1px solid rgba(255,255,255,0.12)' }}>3</span>
+                      <p className="text-xs" style={{ color: '#9B9B96', lineHeight: '1.5' }}>We send you vehicle details and a written quotation.</p>
+                    </div>
+                    <div className="flex gap-3 items-start">
+                      <span className="w-6 h-6 rounded-full flex items-center justify-center text-xs font-mono shrink-0" style={{ backgroundColor: '#181818', color: '#F5B400', border: '1px solid rgba(255,255,255,0.12)' }}>4</span>
+                      <p className="text-xs" style={{ color: '#9B9B96', lineHeight: '1.5' }}>You review and approve before committing. No pressure.</p>
                     </div>
                   </div>
-                )}
-
-                {/* Vehicle history */}
-                {vehicle.vehicleHistory && (
-                  <div className="rounded-lg p-6" style={{ backgroundColor: '#111111', border: '1px solid rgba(255,255,255,0.12)' }}>
-                    <h3 className="text-xs uppercase tracking-widest mb-4" style={{ color: '#F5B400' }}>
-                      Vehicle History
-                    </h3>
-                    <div className="space-y-3">
-                      {vehicle.vehicleHistory.previousOwners !== null && (
-                        <div>
-                          <p className="text-xs" style={{ color: '#9B9B96' }}>Previous Owners</p>
-                          <p className="text-sm font-mono" style={{ color: '#F7F7F4' }}>{vehicle.vehicleHistory.previousOwners}</p>
-                        </div>
-                      )}
-                      {vehicle.vehicleHistory.serviceRecords !== null && (
-                        <div>
-                          <p className="text-xs" style={{ color: '#9B9B96' }}>Service Records</p>
-                          <p className="text-sm font-mono" style={{ color: '#F7F7F4' }}>{vehicle.vehicleHistory.serviceRecords ? 'Available' : 'Not available'}</p>
-                        </div>
-                      )}
-                      {vehicle.vehicleHistory.accidentHistory !== null && (
-                        <div>
-                          <p className="text-xs" style={{ color: '#9B9B96' }}>Accident History</p>
-                          <p className="text-sm font-mono" style={{ color: '#F7F7F4' }}>{vehicle.vehicleHistory.accidentHistory}</p>
-                        </div>
-                      )}
-                    </div>
-                  </div>
-                )}
+                </div>
               </div>
             </ScrollReveal>
           </div>
         </div>
       </section>
 
-      {/* Enquiry CTA — WhatsApp first */}
+      {/* Pricing disclaimer */}
+      <section className="py-6">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <PricingDisclaimer />
+        </div>
+      </section>
+
+      {/* Enquiry CTA */}
       <SectionDivider />
       <section className="py-24">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <ScrollReveal>
-            <ContactForm type="inventory" vehicleId={vehicle.id} vehicleInfo={`${vehicle.make} ${vehicle.model} ${vehicle.year}`} />
+            <ContactForm type="inventory" vehicleInfo={`${entry.make} ${entry.model} ${entry.year} (${formatPriceNad(entry.priceNad)} starting estimate)`} />
           </ScrollReveal>
         </div>
       </section>
 
-      {/* Related vehicles */}
+      {/* Related models */}
       {related.length > 0 && (
         <section className="py-12">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <ScrollReveal>
               <h2 className="font-serif-editorial tracking-editorial-tight text-2xl mb-8" style={{ color: '#F7F7F4' }}>
-                Related vehicles
+                Related model guides
               </h2>
             </ScrollReveal>
 
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-              {related.map((v, index) => (
-                <ScrollReveal key={v.id} delay={index * 80}>
-                  <VehicleCard vehicle={v} />
+              {related.map((e, index) => (
+                <ScrollReveal key={e.id} delay={index * 80}>
+                  <CatalogueCard entry={e} />
                 </ScrollReveal>
               ))}
             </div>

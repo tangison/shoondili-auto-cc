@@ -2,46 +2,31 @@
 
 import { useState } from 'react';
 import Link from 'next/link';
-import { vehicles, VehicleData } from '@/lib/inventory-data';
-import { VehicleCard } from '@/components/vehicle-card';
+import { catalogue, formatPriceNad, getWhatsAppEnquireUrl } from '@/lib/inventory-data';
+import { CatalogueCard } from '@/components/catalogue-card';
 import { ScrollReveal } from '@/components/scroll-reveal';
-import { EmptyState } from '@/components/empty-state';
-import { MAKES, BODY_TYPES, FUEL_TYPES, TRANSMISSION_TYPES, VEHICLE_STATUSES } from '@/lib/constants';
+import { PricingDisclaimer } from '@/components/pricing-disclaimer';
+import { CATALOGUE_MAKES, WHATSAPP_URL } from '@/lib/constants';
 
 export default function InventoryPage() {
   const [makeFilter, setMakeFilter] = useState('');
-  const [bodyTypeFilter, setBodyTypeFilter] = useState('');
-  const [fuelFilter, setFuelFilter] = useState('');
-  const [transmissionFilter, setTransmissionFilter] = useState('');
-  const [statusFilter, setStatusFilter] = useState('');
-  const [yearMin, setYearMin] = useState('');
   const [priceMax, setPriceMax] = useState('');
-  const [mileageMax, setMileageMax] = useState('');
+  const [yearMin, setYearMin] = useState('');
 
-  const filtered = vehicles.filter((v) => {
-    if (makeFilter && v.make !== makeFilter) return false;
-    if (bodyTypeFilter && v.bodyType !== bodyTypeFilter) return false;
-    if (fuelFilter && v.fuel !== fuelFilter) return false;
-    if (transmissionFilter && v.transmission !== transmissionFilter) return false;
-    if (statusFilter && v.status !== statusFilter) return false;
-    if (yearMin && v.year < Number(yearMin)) return false;
-    if (priceMax && v.price > Number(priceMax)) return false;
-    if (mileageMax && v.mileage > Number(mileageMax)) return false;
+  const filtered = catalogue.filter((entry) => {
+    if (makeFilter && entry.make !== makeFilter) return false;
+    if (yearMin && entry.year < Number(yearMin)) return false;
+    if (priceMax && entry.priceNad > Number(priceMax)) return false;
     return true;
   });
 
   const clearFilters = () => {
     setMakeFilter('');
-    setBodyTypeFilter('');
-    setFuelFilter('');
-    setTransmissionFilter('');
-    setStatusFilter('');
-    setYearMin('');
     setPriceMax('');
-    setMileageMax('');
+    setYearMin('');
   };
 
-  const hasFilters = makeFilter || bodyTypeFilter || fuelFilter || transmissionFilter || statusFilter || yearMin || priceMax || mileageMax;
+  const hasFilters = makeFilter || priceMax || yearMin;
 
   return (
     <div>
@@ -49,24 +34,28 @@ export default function InventoryPage() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <ScrollReveal>
             <h1 className="font-serif-editorial tracking-editorial-tight text-3xl sm:text-4xl lg:text-5xl mb-4" style={{ color: '#F7F7F4', lineHeight: '1.1' }}>
-              Vehicle inventory
+              Models & Prices
             </h1>
-            <p className="text-sm mb-8" style={{ color: '#9B9B96', lineHeight: '1.6' }}>
-              Browse our available vehicles in Walvis Bay. Each listing shows the information we have. Contact us for more details or to arrange a viewing.
+            <p className="text-sm mb-8" style={{ color: '#9B9B96', lineHeight: '1.7' }}>
+              Browse our model and price guide. These are starting estimates for sourcing a vehicle from Japan, not locally stocked vehicles. Request any model and Shoondili will search for a suitable unit, provide a written quotation, and coordinate the order.
             </p>
+          </ScrollReveal>
+
+          {/* Pricing disclaimer */}
+          <ScrollReveal delay={100}>
+            <PricingDisclaimer />
           </ScrollReveal>
         </div>
       </section>
 
-      <section className="py-8" style={{ borderTop: '1px solid rgba(255,255,255,0.12)' }}>
+      <section className="py-8" style={{ borderTop: '1px solid rgba(255,255,255,0.08)' }}>
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <ScrollReveal>
             <div className="flex items-center justify-between mb-6">
-              <h2 className="text-xs uppercase tracking-widest" style={{ color: '#9B9B96' }}>Filters</h2>
+              <h2 className="text-xs uppercase tracking-[0.15em]" style={{ color: '#9B9B96' }}>Filters</h2>
               {hasFilters && (
                 <button
-                  className="text-xs font-mono"
-                  style={{ color: '#F5B400' }}
+                  className="text-xs font-mono btn-flat px-4 py-1"
                   onClick={clearFilters}
                 >
                   Clear all
@@ -74,90 +63,36 @@ export default function InventoryPage() {
               )}
             </div>
 
-            <div className="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-8 gap-3">
+            <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-3 gap-3">
               <select
                 value={makeFilter}
                 onChange={(e) => setMakeFilter(e.target.value)}
-                className="px-3 py-2 rounded text-xs"
+                className="px-4 py-3 rounded-full text-xs font-mono"
                 style={{ backgroundColor: '#181818', color: makeFilter ? '#F7F7F4' : '#9B9B96', border: '1px solid rgba(255,255,255,0.12)' }}
                 aria-label="Filter by make"
               >
                 <option value="">Any make</option>
-                {MAKES.map((m) => <option key={m} value={m}>{m}</option>)}
-              </select>
-
-              <select
-                value={bodyTypeFilter}
-                onChange={(e) => setBodyTypeFilter(e.target.value)}
-                className="px-3 py-2 rounded text-xs"
-                style={{ backgroundColor: '#181818', color: bodyTypeFilter ? '#F7F7F4' : '#9B9B96', border: '1px solid rgba(255,255,255,0.12)' }}
-                aria-label="Filter by body type"
-              >
-                <option value="">Any body</option>
-                {BODY_TYPES.map((b) => <option key={b} value={b}>{b}</option>)}
-              </select>
-
-              <select
-                value={fuelFilter}
-                onChange={(e) => setFuelFilter(e.target.value)}
-                className="px-3 py-2 rounded text-xs"
-                style={{ backgroundColor: '#181818', color: fuelFilter ? '#F7F7F4' : '#9B9B96', border: '1px solid rgba(255,255,255,0.12)' }}
-                aria-label="Filter by fuel type"
-              >
-                <option value="">Any fuel</option>
-                {FUEL_TYPES.map((f) => <option key={f} value={f}>{f}</option>)}
-              </select>
-
-              <select
-                value={transmissionFilter}
-                onChange={(e) => setTransmissionFilter(e.target.value)}
-                className="px-3 py-2 rounded text-xs"
-                style={{ backgroundColor: '#181818', color: transmissionFilter ? '#F7F7F4' : '#9B9B96', border: '1px solid rgba(255,255,255,0.12)' }}
-                aria-label="Filter by transmission"
-              >
-                <option value="">Any transmission</option>
-                {TRANSMISSION_TYPES.map((t) => <option key={t} value={t}>{t}</option>)}
-              </select>
-
-              <select
-                value={statusFilter}
-                onChange={(e) => setStatusFilter(e.target.value)}
-                className="px-3 py-2 rounded text-xs"
-                style={{ backgroundColor: '#181818', color: statusFilter ? '#F7F7F4' : '#9B9B96', border: '1px solid rgba(255,255,255,0.12)' }}
-                aria-label="Filter by availability"
-              >
-                <option value="">Any status</option>
-                {VEHICLE_STATUSES.map((s) => <option key={s} value={s}>{s}</option>)}
+                {CATALOGUE_MAKES.map((m) => <option key={m} value={m}>{m}</option>)}
               </select>
 
               <input
                 type="number"
-                placeholder="Min year"
+                placeholder="Min year (e.g. 2016)"
                 value={yearMin}
                 onChange={(e) => setYearMin(e.target.value)}
-                className="px-3 py-2 rounded text-xs"
+                className="px-4 py-3 rounded-full text-xs font-mono"
                 style={{ backgroundColor: '#181818', color: '#9B9B96', border: '1px solid rgba(255,255,255,0.12)' }}
                 aria-label="Minimum year"
               />
 
               <input
                 type="number"
-                placeholder="Max price"
+                placeholder="Max price NAD (e.g. 150000)"
                 value={priceMax}
                 onChange={(e) => setPriceMax(e.target.value)}
-                className="px-3 py-2 rounded text-xs"
+                className="px-4 py-3 rounded-full text-xs font-mono"
                 style={{ backgroundColor: '#181818', color: '#9B9B96', border: '1px solid rgba(255,255,255,0.12)' }}
                 aria-label="Maximum price"
-              />
-
-              <input
-                type="number"
-                placeholder="Max km"
-                value={mileageMax}
-                onChange={(e) => setMileageMax(e.target.value)}
-                className="px-3 py-2 rounded text-xs"
-                style={{ backgroundColor: '#181818', color: '#9B9B96', border: '1px solid rgba(255,255,255,0.12)' }}
-                aria-label="Maximum mileage"
               />
             </div>
           </ScrollReveal>
@@ -167,21 +102,31 @@ export default function InventoryPage() {
       <section className="py-12">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <p className="text-xs font-mono mb-8" style={{ color: '#9B9B96' }}>
-            {filtered.length} vehicles found
+            {filtered.length} models in guide
           </p>
 
           {filtered.length === 0 ? (
-            <EmptyState
-              title="No vehicles match your filters"
-              description="Try adjusting your filter criteria or browse all available vehicles."
-              actionLabel="View all inventory"
-              actionHref="/inventory"
-            />
+            <div className="py-12 text-center">
+              <p className="font-serif-editorial tracking-editorial text-lg" style={{ color: '#F7F7F4' }}>
+                No models match your filters
+              </p>
+              <p className="text-sm mt-2" style={{ color: '#9B9B96' }}>
+                Try adjusting your criteria, or ask us to source the vehicle you need.
+              </p>
+              <a
+                href={`${WHATSAPP_URL}?text=${encodeURIComponent('Hi Shoondili, I can\'t find the model I want in your guide. Can you help source it?')}`}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="btn-gold inline-flex items-center gap-2 mt-4 px-6 py-3 text-sm font-mono"
+              >
+                Ask on WhatsApp
+              </a>
+            </div>
           ) : (
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-              {filtered.map((vehicle, index) => (
-                <ScrollReveal key={vehicle.id} delay={index * 80}>
-                  <VehicleCard vehicle={vehicle} />
+              {filtered.map((entry, index) => (
+                <ScrollReveal key={entry.id} delay={index * 80}>
+                  <CatalogueCard entry={entry} />
                 </ScrollReveal>
               ))}
             </div>

@@ -14,14 +14,14 @@ function WhatsAppIcon() {
 
 export function HeroSection() {
   return (
-    <section className="relative min-h-[80vh] flex items-center overflow-hidden" style={{ backgroundColor: '#090909' }}>
+    <section className="relative min-h-[85vh] flex items-center overflow-hidden" style={{ backgroundColor: '#090909' }}>
       {/* Background image */}
       <div className="absolute inset-0">
         <Image
           src="/assets/backgrounds/audi-rs7-motion-hero.webp"
           alt="Vehicle in motion, atmospheric artwork"
           fill
-          className="object-cover opacity-40"
+          className="object-cover opacity-35"
           priority
           sizes="100vw"
         />
@@ -29,17 +29,27 @@ export function HeroSection() {
         <div className="absolute inset-0" style={{ background: 'linear-gradient(to top, #090909 10%, transparent 50%)' }} />
       </div>
 
+      {/* Animated gold accent line */}
+      <div
+        className="absolute left-16 bottom-0 top-0 w-px"
+        style={{
+          backgroundColor: '#F5B400',
+          opacity: 0.15,
+          animation: 'goldLineDraw 1.5s cubic-bezier(0.16,1,0.3,1) 300ms forwards',
+        }}
+      />
+
       {/* Content */}
       <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 w-full">
         <div className="max-w-xl py-24 lg:py-32">
-          {/* Logo */}
-          <div className="mb-8">
+          {/* Large logo */}
+          <div className="mb-10 logo-glow">
             <Link href="/" aria-label="Shoondili Auto CC home">
               <img
                 src="/brand/logo-dark.svg"
                 alt="Shoondili Auto CC"
-                className="h-16 w-auto"
-                style={{ maxHeight: '64px' }}
+                className="h-20 sm:h-24 w-auto"
+                style={{ maxHeight: '96px' }}
               />
             </Link>
           </div>
@@ -48,35 +58,37 @@ export function HeroSection() {
             className="font-serif-editorial tracking-editorial-tight text-3xl sm:text-4xl lg:text-5xl mb-6"
             style={{ color: '#F7F7F4', lineHeight: '1.1' }}
           >
-            Vehicles sourced with care. Sold with honesty.
+            Japanese vehicles, sourced with honesty.
           </h1>
 
-          <p className="text-lg mb-10" style={{ color: '#9B9B96', lineHeight: '1.6' }}>
-            Walvis Bay based. Japanese imports and local inventory. We find the vehicle you need, explain every cost, and deliver to your door.
+          <p className="text-lg mb-10" style={{ color: '#9B9B96', lineHeight: '1.7' }}>
+            Shoondili is a vehicle sourcing and import service based in Walvis Bay, Namibia. We search Japanese auctions and suppliers for the vehicle you want, provide a written quotation, and coordinate shipping, clearance, and registration. You review every detail before committing.
           </p>
 
           <div className="flex flex-col sm:flex-row gap-4">
             <Link
               href="/inventory"
-              className="btn-flat px-6 py-3 text-sm font-medium inline-flex items-center justify-center"
-              style={{ backgroundColor: '#F5B400', color: '#090909', borderColor: '#F5B400' }}
+              className="btn-gold px-8 py-4 text-sm font-mono inline-flex items-center justify-center gap-2"
             >
-              Browse Inventory
-              <svg className="w-4 h-4 ml-2" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+              Models & Prices
+              <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
                 <path strokeLinecap="round" strokeLinejoin="round" d="M9 5l7 7-7 7" />
               </svg>
             </Link>
             <a
-              href={`${WHATSAPP_URL}?text=${encodeURIComponent('Hi Shoondili, I\'d like to find a vehicle. Can you help?')}`}
+              href={`${WHATSAPP_URL}?text=${encodeURIComponent('Hi Shoondili, I\'d like to source a vehicle from Japan. Can you help?')}`}
               target="_blank"
               rel="noopener noreferrer"
-              className="btn-flat px-6 py-3 text-sm font-medium inline-flex items-center justify-center gap-2"
-              style={{ backgroundColor: '#111111', color: '#F7F7F4', borderColor: 'rgba(255,255,255,0.12)' }}
+              className="btn-flat px-8 py-4 text-sm font-medium inline-flex items-center justify-center gap-2"
             >
               <WhatsAppIcon />
               Chat on WhatsApp
             </a>
           </div>
+
+          <p className="text-xs font-mono mt-6" style={{ color: '#9B9B96', letterSpacing: '0.1em' }}>
+            No showroom · Viewings by arrangement · Written quotation before commitment
+          </p>
         </div>
       </div>
     </section>

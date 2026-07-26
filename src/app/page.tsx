@@ -3,41 +3,49 @@
 import Link from 'next/link';
 import Image from 'next/image';
 import { HeroSection } from '@/components/hero-section';
-import { VehicleCard } from '@/components/vehicle-card';
+import { CatalogueCard } from '@/components/catalogue-card';
 import { ScrollReveal } from '@/components/scroll-reveal';
 import { SectionDivider } from '@/components/section-divider';
 import { FAQAccordion } from '@/components/faq-accordion';
 import { ContactForm } from '@/components/contact-form';
-import { getFeaturedVehicles, getAvailableVehicles } from '@/lib/inventory-data';
-import { SERVICE_ICONS, PHONE, EMAIL, IMPORT_STEPS } from '@/lib/constants';
+import { PricingDisclaimer } from '@/components/pricing-disclaimer';
+import { catalogue } from '@/lib/inventory-data';
+import { SERVICE_ICONS, PHONE, EMAIL, IMPORT_STEPS, WHATSAPP_URL } from '@/lib/constants';
 
 export default function Home() {
-  const featured = getFeaturedVehicles();
-  const latestArrivals = getAvailableVehicles().slice(-3);
+  // Show 4 featured catalogue entries
+  const featured = catalogue.slice(0, 4);
+  // Show 3 more entries
+  const moreModels = catalogue.slice(4, 7);
 
   return (
     <div>
       {/* 1. Hero */}
       <HeroSection />
 
-      {/* 2. Featured Vehicles */}
+      {/* 2. Model & Price Guide */}
       <section className="py-24">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <ScrollReveal>
-            <div className="flex items-baseline justify-between mb-8">
+            <div className="flex items-baseline justify-between mb-4">
               <h2 className="font-serif-editorial tracking-editorial-tight text-2xl sm:text-3xl" style={{ color: '#F7F7F4' }}>
-                Featured Vehicles
+                Models & Prices
               </h2>
-              <Link href="/inventory" className="text-sm font-mono" style={{ color: '#F5B400' }}>
-                View all inventory
+              <Link href="/inventory" className="text-sm font-mono transition-colors hover:text-brand-gold" style={{ color: '#F5B400' }}>
+                View all models
               </Link>
             </div>
           </ScrollReveal>
+          <ScrollReveal delay={100}>
+            <p className="text-sm mb-8" style={{ color: '#9B9B96', lineHeight: '1.6' }}>
+              Browse our model and price guide. These are starting estimates for sourcing a vehicle from Japan, not locally stocked vehicles. Request any model and we will search for a suitable unit.
+            </p>
+          </ScrollReveal>
 
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-            {featured.map((vehicle, index) => (
-              <ScrollReveal key={vehicle.id} delay={index * 80}>
-                <VehicleCard vehicle={vehicle} />
+            {featured.map((entry, index) => (
+              <ScrollReveal key={entry.id} delay={index * 80}>
+                <CatalogueCard entry={entry} />
               </ScrollReveal>
             ))}
           </div>
@@ -46,19 +54,19 @@ export default function Home() {
 
       <SectionDivider />
 
-      {/* 3. Why Choose Shoondili */}
+      {/* 3. What We Do */}
       <section className="py-24">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <ScrollReveal>
             <h2 className="font-serif-editorial tracking-editorial-tight text-2xl sm:text-3xl mb-12" style={{ color: '#F7F7F4' }}>
-              Why choose Shoondili
+              What Shoondili does
             </h2>
           </ScrollReveal>
 
-          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-6">
-            {SERVICE_ICONS.slice(0, 8).map((service, index) => (
+          <div className="grid grid-cols-2 sm:grid-cols-4 gap-6">
+            {SERVICE_ICONS.map((service, index) => (
               <ScrollReveal key={service.key} delay={index * 80}>
-                <div className="p-4 rounded-lg" style={{ backgroundColor: '#111111', border: '1px solid rgba(255,255,255,0.12)' }}>
+                <div className="p-5 rounded-2xl transition-all duration-300 hover:translate-y-[-2px]" style={{ backgroundColor: '#111111', border: '1px solid rgba(255,255,255,0.12)' }}>
                   <img src={service.iconPath} alt={service.label} className="w-8 h-8 mb-3" style={{ filter: 'brightness(0) saturate(100%) invert(67%) sepia(98%) saturate(500%) hue-rotate(7deg)' }} />
                   <h3 className="text-sm mb-1" style={{ color: '#F7F7F4' }}>{service.label}</h3>
                 </div>
@@ -78,32 +86,31 @@ export default function Home() {
               <h2 className="font-serif-editorial tracking-editorial-tight text-2xl sm:text-3xl mb-6" style={{ color: '#F7F7F4' }}>
                 Japanese vehicle sourcing
               </h2>
-              <p className="text-sm mb-4" style={{ color: '#9B9B96', lineHeight: '1.6' }}>
-                Namibia imports a significant number of vehicles from Japan each year. Shoondili sources vehicles from Japanese auctions and dealer networks, handles shipping to Walvis Bay port, and supports registration in Namibia.
+              <p className="text-sm mb-4" style={{ color: '#9B9B96', lineHeight: '1.7' }}>
+                Shoondili is a Japanese vehicle sourcing and import service based in Walvis Bay, Namibia. We search Japanese auctions and dealer networks for vehicles that match your requirement, handle shipping to Walvis Bay, and support clearance and registration.
               </p>
-              <p className="text-sm mb-4" style={{ color: '#9B9B96', lineHeight: '1.6' }}>
-                We do not inspect vehicles in Japan ourselves. We share all available information from the source: auction sheets, photos, and condition reports where available. You review this information and decide whether to proceed.
+              <p className="text-sm mb-4" style={{ color: '#9B9B96', lineHeight: '1.7' }}>
+                We do not stock vehicles locally. We share all available information from the source: auction sheets, photos, and condition reports where available. You review this information and decide whether to proceed.
               </p>
-              <p className="text-sm mb-8" style={{ color: '#9B9B96', lineHeight: '1.6' }}>
-                Every cost is explained upfront. No hidden fees. You decide at each step.
+              <p className="text-sm mb-8" style={{ color: '#9B9B96', lineHeight: '1.7' }}>
+                Every cost is explained upfront in a written quotation. No hidden fees. You decide at each step.
               </p>
               <Link
                 href="/imports"
-                className="btn-flat px-6 py-3 text-sm font-medium inline-flex items-center"
-                style={{ backgroundColor: '#F5B400', color: '#090909', borderColor: '#F5B400' }}
+                className="btn-gold px-6 py-3 text-sm font-mono inline-flex items-center gap-2"
               >
                 Learn about the import process
-                <svg className="w-4 h-4 ml-2" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
                   <path strokeLinecap="round" strokeLinejoin="round" d="M9 5l7 7-7 7" />
                 </svg>
               </Link>
             </ScrollReveal>
 
             <ScrollReveal delay={200}>
-              <div className="rounded-lg overflow-hidden" style={{ border: '1px solid rgba(255,255,255,0.12)' }}>
+              <div className="rounded-2xl overflow-hidden" style={{ border: '1px solid rgba(255,255,255,0.12)' }}>
                 <Image
                   src="/assets/backgrounds/walvis-bay-port.webp"
-                  alt="Walvis Bay port, Namibia"
+                  alt="Walvis Bay port, Namibia — where sourced vehicles arrive from Japan"
                   width={640}
                   height={480}
                   className="w-full object-cover"
@@ -116,15 +123,15 @@ export default function Home() {
 
       <SectionDivider />
 
-      {/* 5. Import Process Overview */}
+      {/* 5. How Ordering Works */}
       <section className="py-24">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <ScrollReveal>
             <h2 className="font-serif-editorial tracking-editorial-tight text-2xl sm:text-3xl mb-4" style={{ color: '#F7F7F4' }}>
-              How importing works
+              How ordering works
             </h2>
-            <p className="text-sm mb-12" style={{ color: '#9B9B96', lineHeight: '1.6' }}>
-              Nine steps from your requirement to vehicle delivery. Each step is transparent.
+            <p className="text-sm mb-12" style={{ color: '#9B9B96', lineHeight: '1.7' }}>
+              A straightforward process from choosing a model to receiving your vehicle. Each step is transparent and you decide before committing.
             </p>
           </ScrollReveal>
 
@@ -134,7 +141,7 @@ export default function Home() {
                 <ScrollReveal key={step.number} delay={index * 80}>
                   <div className="flex gap-4 items-start">
                     <div
-                      className="flex items-center justify-center w-8 h-8 rounded shrink-0 font-mono text-xs"
+                      className="flex items-center justify-center w-8 h-8 rounded-full shrink-0 font-mono text-xs"
                       style={{ backgroundColor: '#181818', color: '#F5B400', border: '1px solid rgba(255,255,255,0.12)' }}
                     >
                       {step.number}
@@ -149,10 +156,10 @@ export default function Home() {
             </div>
 
             <ScrollReveal delay={400}>
-              <div className="rounded-lg overflow-hidden" style={{ border: '1px solid rgba(255,255,255,0.12)' }}>
+              <div className="rounded-2xl overflow-hidden" style={{ border: '1px solid rgba(255,255,255,0.12)' }}>
                 <Image
                   src="/assets/process/document-handover.webp"
-                  alt="Document handover process"
+                  alt="Document review during vehicle sourcing process"
                   width={640}
                   height={480}
                   className="w-full object-cover"
@@ -160,41 +167,54 @@ export default function Home() {
               </div>
             </ScrollReveal>
           </div>
+
+          <ScrollReveal delay={200}>
+            <div className="mt-8 text-center">
+              <Link href="/imports" className="btn-flat px-6 py-3 text-sm font-medium inline-flex items-center gap-2">
+                See the full process
+                <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M9 5l7 7-7 7" />
+                </svg>
+              </Link>
+            </div>
+          </ScrollReveal>
         </div>
       </section>
 
       <SectionDivider />
 
-      {/* 6. Finance Guidance */}
+      {/* 6. Payment Options */}
       <section className="py-24">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="grid lg:grid-cols-2 gap-12 items-center">
             <ScrollReveal>
               <h2 className="font-serif-editorial tracking-editorial-tight text-2xl sm:text-3xl mb-6" style={{ color: '#F7F7F4' }}>
-                Finance guidance
+                Ask about payment options
               </h2>
-              <p className="text-sm mb-4" style={{ color: '#9B9B96', lineHeight: '1.6' }}>
-                Shoondili does not lend money or approve finance. We help you understand how vehicle finance works in Namibia and assist with your application to a bank or finance house.
+              <p className="text-sm mb-4" style={{ color: '#9B9B96', lineHeight: '1.7' }}>
+                Shoondili does not lend money or approve finance. We can help you understand how vehicle finance works in Namibia and assist with your application to a bank or finance house, if applicable.
               </p>
-              <p className="text-sm mb-4" style={{ color: '#9B9B96', lineHeight: '1.6' }}>
+              <p className="text-sm mb-4" style={{ color: '#9B9B96', lineHeight: '1.7' }}>
                 Final approval is always the lender's decision. We do not promise approval, interest rates, or monthly payments.
               </p>
-              <Link
-                href="/finance"
-                className="btn-flat px-6 py-3 text-sm font-medium inline-flex items-center"
+              <a
+                href={`${WHATSAPP_URL}?text=${encodeURIComponent('Hi Shoondili, I\'d like to ask about payment options for sourcing a vehicle.')}`}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="btn-gold px-6 py-3 text-sm font-mono inline-flex items-center gap-2"
               >
-                Finance guidance details
-                <svg className="w-4 h-4 ml-2" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                Ask about payment on WhatsApp
+                <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
                   <path strokeLinecap="round" strokeLinejoin="round" d="M9 5l7 7-7 7" />
                 </svg>
-              </Link>
+              </a>
             </ScrollReveal>
 
             <ScrollReveal delay={200}>
-              <div className="rounded-lg overflow-hidden" style={{ border: '1px solid rgba(255,255,255,0.12)' }}>
+              <div className="rounded-2xl overflow-hidden" style={{ border: '1px solid rgba(255,255,255,0.12)' }}>
                 <Image
                   src="/assets/backgrounds/import-documents-desk.webp"
-                  alt="Finance documentation"
+                  alt="Payment documentation"
                   width={640}
                   height={480}
                   className="w-full object-cover"
@@ -207,41 +227,45 @@ export default function Home() {
 
       <SectionDivider />
 
-      {/* 7. Latest Arrivals */}
+      {/* 7. More Models */}
       <section className="py-24">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <ScrollReveal>
-            <div className="flex items-baseline justify-between mb-8">
+            <div className="flex items-baseline justify-between mb-4">
               <h2 className="font-serif-editorial tracking-editorial-tight text-2xl sm:text-3xl" style={{ color: '#F7F7F4' }}>
-                Latest arrivals
+                More models to explore
               </h2>
-              <Link href="/inventory" className="text-sm font-mono" style={{ color: '#F5B400' }}>
+              <Link href="/inventory" className="text-sm font-mono transition-colors hover:text-brand-gold" style={{ color: '#F5B400' }}>
                 View all
               </Link>
             </div>
           </ScrollReveal>
 
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-            {latestArrivals.map((vehicle, index) => (
-              <ScrollReveal key={vehicle.id} delay={index * 80}>
-                <VehicleCard vehicle={vehicle} />
+            {moreModels.map((entry, index) => (
+              <ScrollReveal key={entry.id} delay={index * 80}>
+                <CatalogueCard entry={entry} />
               </ScrollReveal>
             ))}
           </div>
+
+          <ScrollReveal delay={200}>
+            <PricingDisclaimer />
+          </ScrollReveal>
         </div>
       </section>
 
       <SectionDivider />
 
-      {/* 8. Trust & Support */}
+      {/* 8. About Shoondili */}
       <section className="py-24">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="grid lg:grid-cols-2 gap-12 items-center">
             <ScrollReveal>
-              <div className="rounded-lg overflow-hidden" style={{ border: '1px solid rgba(255,255,255,0.12)' }}>
+              <div className="rounded-2xl overflow-hidden" style={{ border: '1px solid rgba(255,255,255,0.12)' }}>
                 <Image
                   src="/assets/process/key-handover.webp"
-                  alt="Key handover after vehicle delivery"
+                  alt="Vehicle delivery in Walvis Bay"
                   width={640}
                   height={480}
                   className="w-full object-cover"
@@ -251,22 +275,25 @@ export default function Home() {
 
             <ScrollReveal delay={200}>
               <h2 className="font-serif-editorial tracking-editorial-tight text-2xl sm:text-3xl mb-6" style={{ color: '#F7F7F4' }}>
-                Trust and support
+                About Shoondili
               </h2>
-              <p className="text-sm mb-4" style={{ color: '#9B9B96', lineHeight: '1.6' }}>
-                We operate with honesty. Every cost is explained before you commit. No hidden charges. No pressure to buy.
+              <p className="text-sm mb-4" style={{ color: '#9B9B96', lineHeight: '1.7' }}>
+                Shoondili is a small vehicle-sourcing startup based in Walvis Bay, Namibia. Our service is straightforward: you tell us the vehicle you want, we search for it in Japan, provide a written quotation, and coordinate purchase, shipping, clearance, and registration assistance.
               </p>
-              <p className="text-sm mb-4" style={{ color: '#9B9B96', lineHeight: '1.6' }}>
-                After delivery, we remain available for questions. We support registration paperwork for imported vehicles and handle ownership transfer documentation for local purchases.
+              <p className="text-sm mb-4" style={{ color: '#9B9B96', lineHeight: '1.7' }}>
+                We operate with honesty. Every cost is explained before you commit. No hidden charges. No pressure to buy. We are a lean startup — not a large dealership with a showroom.
               </p>
-              <p className="text-sm mb-8" style={{ color: '#9B9B96', lineHeight: '1.6' }}>
-                We are a lean startup. We do not have a large team or a showroom. What we offer is straightforward service and honest communication.
+              <p className="text-sm mb-8" style={{ color: '#9B9B96', lineHeight: '1.7' }}>
+                After delivery, we remain available for questions about registration, documentation, and general support.
               </p>
               <Link
-                href="/contact"
-                className="btn-flat px-6 py-3 text-sm font-medium inline-flex items-center"
+                href="/about"
+                className="btn-flat px-6 py-3 text-sm font-medium inline-flex items-center gap-2"
               >
-                Contact us
+                Learn more about us
+                <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M9 5l7 7-7 7" />
+                </svg>
               </Link>
             </ScrollReveal>
           </div>
@@ -275,34 +302,7 @@ export default function Home() {
 
       <SectionDivider />
 
-      {/* 9. Testimonials - truthful empty state */}
-      <section className="py-24">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <ScrollReveal>
-            <h2 className="font-serif-editorial tracking-editorial-tight text-2xl sm:text-3xl mb-12" style={{ color: '#F7F7F4' }}>
-              Customer feedback
-            </h2>
-          </ScrollReveal>
-
-          <ScrollReveal delay={100}>
-            <div className="rounded-lg p-8 text-center" style={{ backgroundColor: '#111111', border: '1px solid rgba(255,255,255,0.12)' }}>
-              <svg className="w-8 h-8 mx-auto mb-4" style={{ color: '#9B9B96' }} fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1}>
-                <path strokeLinecap="round" strokeLinejoin="round" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 21l1.949-3.746A9.863 9.863 0 013 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" />
-              </svg>
-              <p className="font-serif-editorial tracking-editorial text-lg mb-2" style={{ color: '#F7F7F4' }}>
-                No testimonials yet
-              </p>
-              <p className="text-sm" style={{ color: '#9B9B96', lineHeight: '1.6' }}>
-                We are a new startup. As we serve more customers, we will share their genuine feedback here. We will never fabricate testimonials.
-              </p>
-            </div>
-          </ScrollReveal>
-        </div>
-      </section>
-
-      <SectionDivider />
-
-      {/* 10. FAQ */}
+      {/* 9. FAQ */}
       <section className="py-24">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <ScrollReveal>
@@ -317,7 +317,7 @@ export default function Home() {
 
           <ScrollReveal delay={200}>
             <div className="mt-8 text-center">
-              <Link href="/faq" className="text-sm font-mono" style={{ color: '#F5B400' }}>
+              <Link href="/faq" className="text-sm font-mono transition-colors hover:text-brand-gold" style={{ color: '#F5B400' }}>
                 View all FAQ
               </Link>
             </div>
@@ -327,7 +327,7 @@ export default function Home() {
 
       <SectionDivider />
 
-      {/* 11. Direct Enquiry CTA */}
+      {/* 10. Direct Enquiry CTA */}
       <section className="py-24 relative overflow-hidden">
         <div className="absolute inset-0">
           <Image
@@ -344,15 +344,16 @@ export default function Home() {
           <div className="grid lg:grid-cols-2 gap-12 items-center">
             <ScrollReveal>
               <h2 className="font-serif-editorial tracking-editorial-tight text-2xl sm:text-3xl mb-4" style={{ color: '#F7F7F4' }}>
-                Get in touch
+                Start your sourcing enquiry
               </h2>
-              <p className="text-sm mb-4" style={{ color: '#9B9B96', lineHeight: '1.6' }}>
-                Ready to find your next vehicle? Whether you want to browse our inventory, start an import enquiry, or discuss finance options, we are here to help.
+              <p className="text-sm mb-4" style={{ color: '#9B9B96', lineHeight: '1.7' }}>
+                Ready to find your next vehicle? Tell us what you want, your budget, and your preferences. We will search Japanese suppliers and send you a written quotation before you commit.
               </p>
               <div className="space-y-2 text-sm font-mono" style={{ color: '#9B9B96' }}>
                 <p>{PHONE}</p>
                 <p>{EMAIL}</p>
                 <p>Walvis Bay, Namibia</p>
+                <p className="mt-2" style={{ color: '#F5B400' }}>Viewings by arrangement · No showroom</p>
               </div>
             </ScrollReveal>
 

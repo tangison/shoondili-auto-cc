@@ -183,7 +183,7 @@
   color: #090909;
   font-weight: 600;
   font-size: 0.875rem;
-  border-radius: 4px;
+  border-radius: 9999px;
   transition: top 200ms;
 }
 .skip-to-content:focus {
@@ -193,8 +193,8 @@
 /* Scroll animation classes */
 .scroll-reveal {
   opacity: 0;
-  transform: translateY(12px);
-  transition: opacity 600ms cubic-bezier(0.16,1,0.3,1), transform 600ms cubic-bezier(0.16,1,0.3,1);
+  transform: translateY(16px);
+  transition: opacity 700ms cubic-bezier(0.16,1,0.3,1), transform 700ms cubic-bezier(0.16,1,0.3,1);
 }
 
 .scroll-reveal.revealed {
@@ -208,13 +208,13 @@
   animation-delay: var(--stagger-delay);
 }
 
-/* Flat button styles */
+/* ─── Fully rounded button styles ─── */
 .btn-flat {
   background: #111111;
   color: #F7F7F4;
-  border-radius: 4px;
+  border-radius: 9999px;
   border: 1px solid rgba(255,255,255,0.12);
-  transition: transform 200ms, filter 200ms;
+  transition: transform 200ms cubic-bezier(0.16,1,0.3,1), filter 200ms;
 }
 
 .btn-flat:hover {
@@ -231,7 +231,29 @@
   outline-offset: 2px;
 }
 
-/* Tag/badge styles */
+/* Gold primary button — fully rounded */
+.btn-gold {
+  background: #F5B400;
+  color: #090909;
+  border-radius: 9999px;
+  transition: transform 200ms cubic-bezier(0.16,1,0.3,1), filter 200ms;
+}
+
+.btn-gold:hover {
+  transform: scale(0.97);
+  filter: brightness(1.1);
+}
+
+.btn-gold:active {
+  transform: scale(0.95);
+}
+
+.btn-gold:focus-visible {
+  outline: 2px solid #C98900;
+  outline-offset: 2px;
+}
+
+/* Tag/badge styles — fully rounded */
 .tag-pill {
   border-radius: 9999px;
   font-size: 0.75rem;
@@ -268,6 +290,40 @@
   .stagger-reveal {
     animation-delay: 0ms;
   }
+  * {
+    animation-duration: 0ms !important;
+    transition-duration: 0ms !important;
+  }
+}
+
+/* ─── Floating header entrance ─── */
+@keyframes headerFloatIn {
+  from {
+    opacity: 0;
+    transform: translateY(-20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.header-float-in {
+  animation: headerFloatIn 800ms cubic-bezier(0.16,1,0.3,1) forwards;
+}
+
+/* ─── Logo pulse glow ─── */
+@keyframes logoGlow {
+  0%, 100% {
+    filter: drop-shadow(0 0 0px rgba(245,180,0,0));
+  }
+  50% {
+    filter: drop-shadow(0 0 12px rgba(245,180,0,0.3));
+  }
+}
+
+.logo-glow {
+  animation: logoGlow 4s ease-in-out infinite;
 }
 
 /* ─── Search overlay slide-in animation ─── */
@@ -310,7 +366,7 @@
     box-shadow: 0 0 0 0 rgba(245, 180, 0, 0.4);
   }
   50% {
-    box-shadow: 0 0 0 8px rgba(245, 180, 0, 0);
+    box-shadow: 0 0 0 12px rgba(245, 180, 0, 0);
   }
 }
 
@@ -318,3 +374,62 @@
   animation: whatsappPulse 2s infinite;
 }
 
+/* ─── Gold shimmer for hover effects ─── */
+@keyframes goldShimmer {
+  0% {
+    background-position: -200% center;
+  }
+  100% {
+    background-position: 200% center;
+  }
+}
+
+.gold-shimmer-hover {
+  background: linear-gradient(90deg, #F5B400 0%, #C98900 50%, #F5B400 100%);
+  background-size: 200% 100%;
+}
+
+.gold-shimmer-hover:hover {
+  animation: goldShimmer 1.5s ease-in-out;
+}
+
+/* ─── Subtle float animation ─── */
+@keyframes subtleFloat {
+  0%, 100% {
+    transform: translateY(0px);
+  }
+  50% {
+    transform: translateY(-3px);
+  }
+}
+
+.subtle-float {
+  animation: subtleFloat 6s ease-in-out infinite;
+}
+
+/* ─── Off-canvas menu gold line draw ─── */
+@keyframes goldLineDraw {
+  from {
+    height: 0;
+    opacity: 0;
+  }
+  to {
+    height: 100%;
+    opacity: 0.3;
+  }
+}
+
+.gold-line-draw {
+  animation: goldLineDraw 1.2s cubic-bezier(0.16,1,0.3,1) forwards;
+}
+
+/* ─── Pricing disclaimer banner ─── */
+.pricing-disclaimer {
+  background: linear-gradient(135deg, #181818 0%, #111111 100%);
+  border: 1px solid rgba(245,180,0,0.2);
+  border-radius: 9999px;
+  padding: 0.5rem 1.25rem;
+  font-size: 0.7rem;
+  color: #9B9B96;
+  line-height: 1.5;
+}

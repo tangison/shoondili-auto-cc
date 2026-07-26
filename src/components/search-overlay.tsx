@@ -2,9 +2,9 @@
 
 import { useState, useEffect, useRef } from 'react';
 import Link from 'next/link';
-import { MAKES, BODY_TYPES, FUEL_TYPES } from '@/lib/constants';
-import { getAvailableVehicles } from '@/lib/inventory-data';
-import { WHATSAPP_URL } from '@/lib/constants';
+import { CATALOGUE_MAKES } from '@/lib/constants';
+import { catalogue, formatPriceNad, getWhatsAppEnquireUrl, CatalogueEntry } from '@/lib/inventory-data';
+import { WHATSAPP_URL, PRICING_DISCLAIMER } from '@/lib/constants';
 
 interface SearchOverlayProps {
   open: boolean;
@@ -22,51 +22,36 @@ function WhatsAppSmallIcon() {
 export function SearchOverlay({ open, onClose }: SearchOverlayProps) {
   const [query, setQuery] = useState('');
   const [selectedMake, setSelectedMake] = useState('');
-  const [selectedBody, setSelectedBody] = useState('');
-  const [selectedFuel, setSelectedFuel] = useState('');
   const inputRef = useRef<HTMLInputElement>(null);
+
+  const handleClose = () => {
+    setQuery('');
+    setSelectedMake('');
+    onClose();
+  };
 
   useEffect(() => {
     if (open) {
       setTimeout(() => inputRef.current?.focus(), 400);
-    } else {
-      setQuery('');
-      setSelectedMake('');
-      setSelectedBody('');
-      setSelectedFuel('');
     }
   }, [open]);
 
   useEffect(() => {
     const handleKey = (e: KeyboardEvent) => {
       if (e.key === 'Escape' && open) onClose();
-      if (e.key === '/' && !open) {
-        e.preventDefault();
-        // Can't open from here — parent handles
-      }
     };
     window.addEventListener('keydown', handleKey);
     return () => window.removeEventListener('keydown', handleKey);
   }, [open, onClose]);
 
-  const allVehicles = getAvailableVehicles();
-
-  const filtered = allVehicles.filter((v) => {
-    const matchesQuery = query === '' || 
-      `${v.make} ${v.model} ${v.variant || ''} ${v.year}`
+  const filtered = catalogue.filter((entry) => {
+    const matchesQuery = query === '' ||
+      `${entry.make} ${entry.model} ${entry.year} ${entry.shape}`
         .toLowerCase()
         .includes(query.toLowerCase());
-    const matchesMake = selectedMake === '' || v.make === selectedMake;
-    const matchesBody = selectedBody === '' || v.bodyType === selectedBody;
-    const matchesFuel = selectedFuel === '' || v.fuel === selectedFuel;
-    return matchesQuery && matchesMake && matchesBody && matchesFuel;
+    const matchesMake = selectedMake === '' || entry.make === selectedMake;
+    return matchesQuery && matchesMake;
   });
-
-  const formatPrice = (n: number) =>
-    new Intl.NumberFormat('en-NA', { style: 'currency', currency: 'NAD', maximumFractionDigits: 0 }).format(n);
-
-  const whatsappMessage = (v: any) =>
-    encodeURIComponent(`Hi Shoondili, I'm interested in the ${v.make} ${v.model} ${v.year} (${formatPrice(v.price)}). Could you provide more details?`);
 
   if (!open) return null;
 
@@ -77,8 +62,8 @@ export function SearchOverlay({ open, onClose }: SearchOverlayProps) {
         className="absolute inset-0"
         style={{
           backgroundColor: 'rgba(9,9,9,0.95)',
-          backdropFilter: 'blur(20px)',
-          transition: 'opacity 300ms',
+          backdropFilter: 'blur(24px)',
+          WebkitBackdropFilter: 'blur(24px)',
         }}
         onClick={onClose}
       />
@@ -87,13 +72,13 @@ export function SearchOverlay({ open, onClose }: SearchOverlayProps) {
       <div
         className="relative z-10 max-w-3xl mx-auto h-full flex flex-col px-4 sm:px-6 pt-6"
         style={{
-          animation: 'searchSlideIn 400ms cubic-bezier(0.16,1,0.3,1) forwards',
+          animation: 'searchSlideIn 500ms cubic-bezier(0.16,1,0.3,1) forwards',
         }}
       >
         {/* Close button */}
         <button
           onClick={onClose}
-          className="absolute top-4 right-4 p-2 transition-colors"
+          className="absolute top-4 right-4 p-2 rounded-full transition-all duration-300 hover:scale-105"
           style={{ color: '#9B9B96' }}
           aria-label="Close search"
         >
@@ -103,13 +88,16 @@ export function SearchOverlay({ open, onClose }: SearchOverlayProps) {
         </button>
 
         {/* Search title */}
-        <h2 className="font-serif-editorial tracking-editorial-tight text-2xl mb-6" style={{ color: '#F7F7F4' }}>
-          Find your vehicle
+        <h2 className="font-serif-editorial tracking-editorial-tight text-3xl mb-2" style={{ color: '#F7F7F4' }}>
+          Find a model
         </h2>
+        <p className="text-xs mb-6" style={{ color: '#9B9B96' }}>
+          Search our model and price guide. These are sourcing estimates, not stock vehicles.
+        </p>
 
         {/* Search input */}
         <div className="relative mb-6">
-          <svg className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="#9B9B96" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round">
+          <svg className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="#9B9B96" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round">
             <circle cx="11" cy="11" r="7" />
             <path d="M21 21l-4.35-4.35" />
           </svg>
@@ -119,7 +107,7 @@ export function SearchOverlay({ open, onClose }: SearchOverlayProps) {
             value={query}
             onChange={(e) => setQuery(e.target.value)}
             placeholder="Search by make, model, year..."
-            className="w-full pl-10 pr-4 py-3 rounded text-sm"
+            className="w-full pl-12 pr-4 py-4 text-sm rounded-full"
             style={{
               backgroundColor: '#181818',
               color: '#F7F7F4',
@@ -128,102 +116,35 @@ export function SearchOverlay({ open, onClose }: SearchOverlayProps) {
           />
         </div>
 
-        {/* Filter pills */}
-        <div className="space-y-3 mb-6">
-          {/* Makes */}
-          <div>
-            <p className="text-xs uppercase tracking-widest mb-2" style={{ color: '#9B9B96' }}>Make</p>
-            <div className="flex flex-wrap gap-2">
+        {/* Make filter pills */}
+        <div className="mb-6">
+          <p className="text-xs uppercase tracking-[0.15em] mb-3" style={{ color: '#9B9B96' }}>Make</p>
+          <div className="flex flex-wrap gap-2">
+            <button
+              onClick={() => setSelectedMake('')}
+              className="px-4 py-2 text-xs font-mono rounded-full transition-all duration-300"
+              style={{
+                backgroundColor: selectedMake === '' ? '#F5B400' : '#181818',
+                color: selectedMake === '' ? '#090909' : '#9B9B96',
+                border: '1px solid rgba(255,255,255,0.12)',
+              }}
+            >
+              All
+            </button>
+            {CATALOGUE_MAKES.map((make) => (
               <button
-                onClick={() => setSelectedMake('')}
-                className="px-3 py-1 text-xs font-mono rounded transition-colors"
+                key={make}
+                onClick={() => setSelectedMake(selectedMake === make ? '' : make)}
+                className="px-4 py-2 text-xs font-mono rounded-full transition-all duration-300"
                 style={{
-                  backgroundColor: selectedMake === '' ? '#F5B400' : '#181818',
-                  color: selectedMake === '' ? '#090909' : '#9B9B96',
+                  backgroundColor: selectedMake === make ? '#F5B400' : '#181818',
+                  color: selectedMake === make ? '#090909' : '#9B9B96',
                   border: '1px solid rgba(255,255,255,0.12)',
                 }}
               >
-                All
+                {make}
               </button>
-              {MAKES.filter(m => allVehicles.some(v => v.make === m)).map((make) => (
-                <button
-                  key={make}
-                  onClick={() => setSelectedMake(selectedMake === make ? '' : make)}
-                  className="px-3 py-1 text-xs font-mono rounded transition-colors"
-                  style={{
-                    backgroundColor: selectedMake === make ? '#F5B400' : '#181818',
-                    color: selectedMake === make ? '#090909' : '#9B9B96',
-                    border: '1px solid rgba(255,255,255,0.12)',
-                  }}
-                >
-                  {make}
-                </button>
-              ))}
-            </div>
-          </div>
-
-          {/* Body types */}
-          <div>
-            <p className="text-xs uppercase tracking-widest mb-2" style={{ color: '#9B9B96' }}>Body Type</p>
-            <div className="flex flex-wrap gap-2">
-              <button
-                onClick={() => setSelectedBody('')}
-                className="px-3 py-1 text-xs font-mono rounded transition-colors"
-                style={{
-                  backgroundColor: selectedBody === '' ? '#F5B400' : '#181818',
-                  color: selectedBody === '' ? '#090909' : '#9B9B96',
-                  border: '1px solid rgba(255,255,255,0.12)',
-                }}
-              >
-                All
-              </button>
-              {BODY_TYPES.filter(bt => allVehicles.some(v => v.bodyType === bt)).map((body) => (
-                <button
-                  key={body}
-                  onClick={() => setSelectedBody(selectedBody === body ? '' : body)}
-                  className="px-3 py-1 text-xs font-mono rounded transition-colors"
-                  style={{
-                    backgroundColor: selectedBody === body ? '#F5B400' : '#181818',
-                    color: selectedBody === body ? '#090909' : '#9B9B96',
-                    border: '1px solid rgba(255,255,255,0.12)',
-                  }}
-                >
-                  {body}
-                </button>
-              ))}
-            </div>
-          </div>
-
-          {/* Fuel types */}
-          <div>
-            <p className="text-xs uppercase tracking-widest mb-2" style={{ color: '#9B9B96' }}>Fuel</p>
-            <div className="flex flex-wrap gap-2">
-              <button
-                onClick={() => setSelectedFuel('')}
-                className="px-3 py-1 text-xs font-mono rounded transition-colors"
-                style={{
-                  backgroundColor: selectedFuel === '' ? '#F5B400' : '#181818',
-                  color: selectedFuel === '' ? '#090909' : '#9B9B96',
-                  border: '1px solid rgba(255,255,255,0.12)',
-                }}
-              >
-                All
-              </button>
-              {FUEL_TYPES.filter(ft => allVehicles.some(v => v.fuel === ft)).map((fuel) => (
-                <button
-                  key={fuel}
-                  onClick={() => setSelectedFuel(selectedFuel === fuel ? '' : fuel)}
-                  className="px-3 py-1 text-xs font-mono rounded transition-colors"
-                  style={{
-                    backgroundColor: selectedFuel === fuel ? '#F5B400' : '#181818',
-                    color: selectedFuel === fuel ? '#090909' : '#9B9B96',
-                    border: '1px solid rgba(255,255,255,0.12)',
-                  }}
-                >
-                  {fuel}
-                </button>
-              ))}
-            </div>
+            ))}
           </div>
         </div>
 
@@ -232,17 +153,16 @@ export function SearchOverlay({ open, onClose }: SearchOverlayProps) {
           {filtered.length === 0 ? (
             <div className="py-12 text-center">
               <p className="font-serif-editorial tracking-editorial text-lg" style={{ color: '#F7F7F4' }}>
-                No vehicles found
+                No models found
               </p>
               <p className="text-sm mt-2" style={{ color: '#9B9B96' }}>
-                Try different search terms or filters, or chat with us directly.
+                Try different search terms, or chat with us about what you need.
               </p>
               <a
-                href={`${WHATSAPP_URL}?text=${encodeURIComponent('Hi Shoondili, I\'m looking for a vehicle but can\'t find what I need on your site. Can you help?')}`}
+                href={`${WHATSAPP_URL}?text=${encodeURIComponent('Hi Shoondili, I\'m looking for a vehicle but can\'t find the model I need. Can you help source it?')}`}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="inline-flex items-center gap-2 mt-4 px-4 py-2 text-sm font-mono rounded transition-colors"
-                style={{ backgroundColor: '#F5B400', color: '#090909' }}
+                className="btn-gold inline-flex items-center gap-2 mt-4 px-4 py-2 text-sm font-mono"
               >
                 <WhatsAppSmallIcon />
                 Ask on WhatsApp
@@ -250,51 +170,50 @@ export function SearchOverlay({ open, onClose }: SearchOverlayProps) {
             </div>
           ) : (
             <ul className="space-y-3 pb-8">
-              {filtered.map((vehicle) => (
-                <li key={vehicle.id}>
+              {filtered.map((entry) => (
+                <li key={entry.id}>
                   <Link
-                    href={`/inventory/${vehicle.slug}`}
+                    href={`/inventory/${entry.slug}`}
                     onClick={onClose}
-                    className="flex items-center gap-4 p-3 rounded-lg transition-colors duration-200 hover:bg-brand-raised"
+                    className="flex items-center gap-4 p-4 rounded-2xl transition-all duration-300 hover:translate-x-1"
                     style={{ backgroundColor: '#111111', border: '1px solid rgba(255,255,255,0.12)' }}
                   >
-                    {/* Vehicle thumbnail */}
-                    <div className="w-16 h-16 rounded overflow-hidden shrink-0" style={{ backgroundColor: '#181818' }}>
-                      {vehicle.images.length > 0 ? (
-                        <img src={vehicle.images[0]} alt={`${vehicle.make} ${vehicle.model}`} className="w-full h-full object-cover" />
+                    {/* Model thumbnail placeholder */}
+                    <div className="w-16 h-16 rounded-xl overflow-hidden shrink-0 flex items-center justify-center" style={{ backgroundColor: '#181818' }}>
+                      {entry.images.length > 0 ? (
+                        <img src={entry.images[0]} alt={`${entry.make} ${entry.model}`} className="w-full h-full object-cover" />
                       ) : (
-                        <div className="w-full h-full flex items-center justify-center">
-                          <svg className="w-6 h-6" style={{ color: '#9B9B96' }} fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1}>
-                            <path strokeLinecap="round" strokeLinejoin="round" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M8 8h.01M12 12h.01" />
-                          </svg>
-                        </div>
+                        <svg className="w-6 h-6" style={{ color: '#9B9B96' }} fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1}>
+                          <path strokeLinecap="round" strokeLinejoin="round" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M8 8h.01M12 12h.01" />
+                        </svg>
                       )}
                     </div>
 
-                    {/* Vehicle info */}
+                    {/* Model info */}
                     <div className="flex-1 min-w-0">
                       <p className="font-serif-editorial tracking-editorial text-base" style={{ color: '#F7F7F4' }}>
-                        {vehicle.make} {vehicle.model}
+                        {entry.make} {entry.model}
                       </p>
                       <p className="text-xs font-mono" style={{ color: '#9B9B96' }}>
-                        {vehicle.year} · {vehicle.transmission} · {new Intl.NumberFormat('en-NA').format(vehicle.mileage)} km
+                        {entry.year} · {entry.shape !== 'unspecified' ? entry.shape : 'Order from Japan'}
                       </p>
                     </div>
 
                     {/* Price + WhatsApp */}
                     <div className="shrink-0 text-right">
                       <p className="text-sm font-medium" style={{ color: '#F5B400' }}>
-                        {formatPrice(vehicle.price)}
+                        {formatPriceNad(entry.priceNad)}
                       </p>
+                      <p className="text-xs font-mono mt-0.5" style={{ color: '#9B9B96' }}>starting estimate</p>
                       <a
-                        href={`${WHATSAPP_URL}?text=${whatsappMessage(vehicle)}`}
+                        href={getWhatsAppEnquireUrl(entry)}
                         target="_blank"
                         rel="noopener noreferrer"
                         className="inline-flex items-center gap-1 mt-1 text-xs font-mono transition-colors"
                         style={{ color: '#9B9B96' }}
                       >
                         <WhatsAppSmallIcon />
-                        Enquire
+                        {entry.primaryCta}
                       </a>
                     </div>
                   </Link>
@@ -306,7 +225,7 @@ export function SearchOverlay({ open, onClose }: SearchOverlayProps) {
 
         {/* Keyboard hint */}
         <div className="py-2 text-xs font-mono" style={{ color: '#9B9B96' }}>
-          Press <kbd style={{ backgroundColor: '#181818', border: '1px solid rgba(255,255,255,0.12)', padding: '2px 6px', borderRadius: '3px' }}>ESC</kbd> to close
+          Press <kbd style={{ backgroundColor: '#181818', border: '1px solid rgba(255,255,255,0.12)', padding: '2px 8px', borderRadius: '9999px' }}>ESC</kbd> to close
         </div>
       </div>
     </div>

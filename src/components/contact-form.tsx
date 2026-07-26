@@ -2,7 +2,7 @@
 
 import { useState } from 'react';
 import { PHONE, EMAIL, WHATSAPP_URL } from '@/lib/constants';
-import { WhatsAppCTA } from '@/components/whatsapp-cta';
+import { CATALOGUE_MAKES } from '@/lib/constants';
 
 interface ContactFormProps {
   type?: 'general' | 'inventory' | 'import' | 'finance' | 'sell';
@@ -21,45 +21,76 @@ function WhatsAppIcon() {
 export function ContactForm({ type = 'general', vehicleId, vehicleInfo }: ContactFormProps) {
   const [formData, setFormData] = useState({
     name: '',
-    vehicle: '',
+    phone: '',
+    email: '',
+    make: '',
+    model: '',
+    yearRange: '',
     budget: '',
+    transmission: '',
+    fuel: '',
+    colour: '',
     message: '',
   });
 
   const typeLabels: Record<string, string> = {
-    general: 'General Enquiry',
-    inventory: 'Vehicle Enquiry',
+    general: 'Sourcing Enquiry',
+    inventory: 'Model Enquiry',
     import: 'Import Enquiry',
-    finance: 'Finance Enquiry',
-    sell: 'Sell Your Vehicle',
+    finance: 'Payment Options Enquiry',
+    sell: 'Vehicle Sale Enquiry',
   };
 
   const typeMessages: Record<string, string> = {
-    general: 'Hi Shoondili, I have a general enquiry.',
-    inventory: `Hi Shoondili, I'm interested in a vehicle in your inventory.`,
+    general: 'Hi Shoondili, I\'d like to enquire about sourcing a vehicle from Japan.',
+    inventory: `Hi Shoondili, I'm interested in sourcing a specific model.`,
     import: 'Hi Shoondili, I\'d like to start an import enquiry for a vehicle from Japan.',
-    finance: 'Hi Shoondili, I\'d like to discuss finance options for a vehicle.',
+    finance: 'Hi Shoondili, I\'d like to ask about payment options.',
     sell: 'Hi Shoondili, I\'d like to sell my vehicle. Can you help?',
   };
 
-  // Build WhatsApp message from form data
   const buildWhatsAppMessage = () => {
     let msg = typeMessages[type];
-    if (vehicleInfo) msg = `Hi Shoondili, I'm interested in ${vehicleInfo}.`;
+    if (vehicleInfo) msg = `Hi Shoondili, I'm interested in sourcing ${vehicleInfo}.`;
     if (formData.name) msg += ` My name is ${formData.name}.`;
-    if (formData.vehicle) msg += ` I'm looking for: ${formData.vehicle}.`;
-    if (formData.budget) msg += ` My budget is around ${formData.budget}.`;
-    if (formData.message) msg += ` ${formData.message}`;
+    if (formData.phone) msg += ` My WhatsApp number is ${formData.phone}.`;
+    if (formData.email) msg += ` Email: ${formData.email}.`;
+    if (formData.make) msg += ` I'm looking for: ${formData.make} ${formData.model || ''}.`;
+    if (formData.yearRange) msg += ` Year range: ${formData.yearRange}.`;
+    if (formData.budget) msg += ` Maximum budget: ${formData.budget}.`;
+    if (formData.transmission) msg += ` Transmission preference: ${formData.transmission}.`;
+    if (formData.fuel) msg += ` Fuel preference: ${formData.fuel}.`;
+    if (formData.colour) msg += ` Colour preference: ${formData.colour}.`;
+    if (formData.message) msg += ` Additional notes: ${formData.message}`;
     return encodeURIComponent(msg);
   };
 
   const whatsappHref = `${WHATSAPP_URL}?text=${buildWhatsAppMessage()}`;
 
+  const inputStyle = {
+    backgroundColor: '#181818',
+    color: '#F7F7F4',
+    border: '1px solid rgba(255,255,255,0.12)',
+    borderRadius: '9999px',
+  };
+
+  const labelStyle = {
+    color: '#9B9B96',
+    fontSize: '0.7rem',
+    letterSpacing: '0.1em',
+    textTransform: 'uppercase' as const,
+  };
+
   return (
-    <div className="rounded-lg p-6" style={{ backgroundColor: '#111111', border: '1px solid rgba(255,255,255,0.12)' }}>
+    <div className="rounded-2xl p-6" style={{ backgroundColor: '#111111', border: '1px solid rgba(255,255,255,0.12)' }}>
       <h3 className="font-serif-editorial tracking-editorial text-xl mb-2" style={{ color: '#F7F7F4' }}>
         {typeLabels[type]}
       </h3>
+
+      {/* Sourcing disclaimer */}
+      <p className="text-xs mb-6" style={{ color: '#9B9B96', lineHeight: '1.5' }}>
+        This is a vehicle sourcing request, not a vehicle reservation or purchase agreement. Shoondili will provide a written quotation before you commit.
+      </p>
 
       {/* WhatsApp-first: primary CTA at top */}
       <div className="mb-6">
@@ -67,12 +98,7 @@ export function ContactForm({ type = 'general', vehicleId, vehicleInfo }: Contac
           href={whatsappHref}
           target="_blank"
           rel="noopener noreferrer"
-          className="w-full px-6 py-4 text-sm font-mono inline-flex items-center justify-center gap-3 transition-all duration-200 hover:scale-[0.98]"
-          style={{
-            backgroundColor: '#F5B400',
-            color: '#090909',
-            borderRadius: '4px',
-          }}
+          className="btn-gold w-full px-6 py-4 text-sm font-mono inline-flex items-center justify-center gap-3"
         >
           <WhatsAppIcon />
           Send enquiry via WhatsApp
@@ -90,72 +116,182 @@ export function ContactForm({ type = 'general', vehicleId, vehicleInfo }: Contac
       </p>
 
       <div className="space-y-4 mb-6">
+        {/* Name */}
         <div>
-          <label htmlFor="wa-name" className="text-xs uppercase tracking-widest block mb-2" style={{ color: '#9B9B96' }}>
-            Your Name
-          </label>
+          <label htmlFor="wa-name" className="block mb-2" style={labelStyle}>Your Name</label>
           <input
             id="wa-name"
             type="text"
             value={formData.name}
             onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-            className="w-full px-3 py-2 rounded text-sm"
-            style={{ backgroundColor: '#181818', color: '#F7F7F4', border: '1px solid rgba(255,255,255,0.12)' }}
+            className="w-full px-4 py-3 text-sm"
+            style={inputStyle}
             placeholder="Your name"
           />
         </div>
 
+        {/* Phone / WhatsApp */}
+        <div>
+          <label htmlFor="wa-phone" className="block mb-2" style={labelStyle}>Phone or WhatsApp Number</label>
+          <input
+            id="wa-phone"
+            type="tel"
+            value={formData.phone}
+            onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
+            className="w-full px-4 py-3 text-sm"
+            style={inputStyle}
+            placeholder="Your WhatsApp or phone number"
+          />
+        </div>
+
+        {/* Email — optional */}
+        <div>
+          <label htmlFor="wa-email" className="block mb-2" style={labelStyle}>Email (optional)</label>
+          <input
+            id="wa-email"
+            type="email"
+            value={formData.email}
+            onChange={(e) => setFormData({ ...formData, email: e.target.value })}
+            className="w-full px-4 py-3 text-sm"
+            style={inputStyle}
+            placeholder="Your email address"
+          />
+        </div>
+
+        {/* Make */}
         {(type === 'import' || type === 'inventory' || type === 'general') && (
           <div>
-            <label htmlFor="wa-vehicle" className="text-xs uppercase tracking-widest block mb-2" style={{ color: '#9B9B96' }}>
-              Vehicle you want
-            </label>
-            <input
-              id="wa-vehicle"
-              type="text"
-              value={formData.vehicle}
-              onChange={(e) => setFormData({ ...formData, vehicle: e.target.value })}
-              className="w-full px-3 py-2 rounded text-sm"
-              style={{ backgroundColor: '#181818', color: '#F7F7F4', border: '1px solid rgba(255,255,255,0.12)' }}
-              placeholder="e.g. Toyota Hilux 2020, Nissan Patrol..."
-            />
+            <label htmlFor="wa-make" className="block mb-2" style={labelStyle}>Preferred Make</label>
+            <select
+              id="wa-make"
+              value={formData.make}
+              onChange={(e) => setFormData({ ...formData, make: e.target.value })}
+              className="w-full px-4 py-3 text-sm"
+              style={inputStyle}
+            >
+              <option value="">Any make</option>
+              {CATALOGUE_MAKES.map((make) => (
+                <option key={make} value={make}>{make}</option>
+              ))}
+            </select>
           </div>
         )}
 
-        {(type === 'finance' || type === 'inventory') && (
+        {/* Model */}
+        {(type === 'import' || type === 'inventory' || type === 'general') && (
           <div>
-            <label htmlFor="wa-budget" className="text-xs uppercase tracking-widest block mb-2" style={{ color: '#9B9B96' }}>
-              Budget range
-            </label>
+            <label htmlFor="wa-model" className="block mb-2" style={labelStyle}>Preferred Model</label>
             <input
-              id="wa-budget"
+              id="wa-model"
               type="text"
-              value={formData.budget}
-              onChange={(e) => setFormData({ ...formData, budget: e.target.value })}
-              className="w-full px-3 py-2 rounded text-sm"
-              style={{ backgroundColor: '#181818', color: '#F7F7F4', border: '1px solid rgba(255,255,255,0.12)' }}
-              placeholder="e.g. NAD 200,000 – 350,000"
+              value={formData.model}
+              onChange={(e) => setFormData({ ...formData, model: e.target.value })}
+              className="w-full px-4 py-3 text-sm"
+              style={inputStyle}
+              placeholder="e.g. Note, Fit, Demio, Polo..."
             />
           </div>
         )}
 
+        {/* Year range */}
+        {(type === 'import' || type === 'inventory' || type === 'general') && (
+          <div>
+            <label htmlFor="wa-year" className="block mb-2" style={labelStyle}>Preferred Year Range</label>
+            <input
+              id="wa-year"
+              type="text"
+              value={formData.yearRange}
+              onChange={(e) => setFormData({ ...formData, yearRange: e.target.value })}
+              className="w-full px-4 py-3 text-sm"
+              style={inputStyle}
+              placeholder="e.g. 2014–2018"
+            />
+          </div>
+        )}
+
+        {/* Budget */}
         <div>
-          <label htmlFor="wa-message" className="text-xs uppercase tracking-widest block mb-2" style={{ color: '#9B9B96' }}>
-            Additional details
-          </label>
+          <label htmlFor="wa-budget" className="block mb-2" style={labelStyle}>Maximum Budget (NAD)</label>
+          <input
+            id="wa-budget"
+            type="text"
+            value={formData.budget}
+            onChange={(e) => setFormData({ ...formData, budget: e.target.value })}
+            className="w-full px-4 py-3 text-sm"
+            style={inputStyle}
+            placeholder="e.g. N$150,000"
+          />
+        </div>
+
+        {/* Transmission preference — optional */}
+        {(type === 'import' || type === 'inventory') && (
+          <div>
+            <label htmlFor="wa-transmission" className="block mb-2" style={labelStyle}>Transmission Preference (optional)</label>
+            <select
+              id="wa-transmission"
+              value={formData.transmission}
+              onChange={(e) => setFormData({ ...formData, transmission: e.target.value })}
+              className="w-full px-4 py-3 text-sm"
+              style={inputStyle}
+            >
+              <option value="">No preference</option>
+              <option value="Automatic">Automatic</option>
+              <option value="Manual">Manual</option>
+            </select>
+          </div>
+        )}
+
+        {/* Fuel preference — optional */}
+        {(type === 'import' || type === 'inventory') && (
+          <div>
+            <label htmlFor="wa-fuel" className="block mb-2" style={labelStyle}>Fuel Preference (optional)</label>
+            <select
+              id="wa-fuel"
+              value={formData.fuel}
+              onChange={(e) => setFormData({ ...formData, fuel: e.target.value })}
+              className="w-full px-4 py-3 text-sm"
+              style={inputStyle}
+            >
+              <option value="">No preference</option>
+              <option value="Petrol">Petrol</option>
+              <option value="Diesel">Diesel</option>
+              <option value="Hybrid">Hybrid</option>
+            </select>
+          </div>
+        )}
+
+        {/* Colour preference — optional */}
+        {(type === 'import' || type === 'inventory') && (
+          <div>
+            <label htmlFor="wa-colour" className="block mb-2" style={labelStyle}>Colour Preference (optional)</label>
+            <input
+              id="wa-colour"
+              type="text"
+              value={formData.colour}
+              onChange={(e) => setFormData({ ...formData, colour: e.target.value })}
+              className="w-full px-4 py-3 text-sm"
+              style={inputStyle}
+              placeholder="e.g. White, Silver, Black..."
+            />
+          </div>
+        )}
+
+        {/* Message */}
+        <div>
+          <label htmlFor="wa-message" className="block mb-2" style={labelStyle}>Additional Details</label>
           <textarea
             id="wa-message"
-            rows={3}
+            rows={4}
             value={formData.message}
             onChange={(e) => setFormData({ ...formData, message: e.target.value })}
-            className="w-full px-3 py-2 rounded text-sm"
-            style={{ backgroundColor: '#181818', color: '#F7F7F4', border: '1px solid rgba(255,255,255,0.12)' }}
-            placeholder="Any extra info you want to share..."
+            className="w-full px-4 py-3 text-sm"
+            style={{ ...inputStyle, borderRadius: '16px' }}
+            placeholder="Any extra information you want to share..."
           />
         </div>
       </div>
 
-      {/* Composed WhatsApp send button — updates as form changes */}
+      {/* Composed WhatsApp send button */}
       <a
         href={whatsappHref}
         target="_blank"

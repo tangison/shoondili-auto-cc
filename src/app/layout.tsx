@@ -24,18 +24,18 @@ const newsreader = Newsreader({
 
 export const metadata: Metadata = {
   title: {
-    default: 'Shoondili Auto CC | Vehicle Sourcing & Sales, Walvis Bay, Namibia',
+    default: 'Shoondili Auto CC | Japanese Vehicle Sourcing & Import Service, Walvis Bay, Namibia',
     template: '%s | Shoondili Auto CC',
   },
-  description: 'Vehicle sourcing and sales from Walvis Bay, Namibia. Japanese imports, local inventory, and finance guidance. Shoondili Auto CC finds the vehicle you need.',
-  keywords: ['Shoondili Auto', 'vehicles Namibia', 'Japanese imports', 'Walvis Bay cars', 'car sales Namibia', 'vehicle sourcing', 'finance guidance'],
+  description: 'Japanese vehicle sourcing and import service from Walvis Bay, Namibia. Shoondili searches, sources, ships, and assists with clearance and registration. Written quotation before commitment.',
+  keywords: ['Shoondili Auto', 'vehicles Namibia', 'Japanese imports', 'Walvis Bay cars', 'vehicle sourcing Namibia', 'Japanese vehicle sourcing', 'car import Namibia', 'order car from Japan', 'vehicle sourcing service'],
   authors: [{ name: 'Shoondili Auto CC' }],
   icons: {
     icon: '/brand/favicon.svg',
   },
   openGraph: {
-    title: 'Shoondili Auto CC | Vehicle Sourcing & Sales',
-    description: 'Vehicle sourcing and sales from Walvis Bay, Namibia. Japanese imports, local inventory, and finance guidance.',
+    title: 'Shoondili Auto CC | Japanese Vehicle Sourcing',
+    description: 'Japanese vehicle sourcing and import service from Walvis Bay, Namibia. Order a vehicle from Japan. Written quotation before commitment.',
     url: 'https://shoondili.com',
     siteName: 'Shoondili Auto CC',
     type: 'website',
@@ -43,8 +43,8 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: 'summary_large_image',
-    title: 'Shoondili Auto CC | Vehicle Sourcing & Sales',
-    description: 'Vehicle sourcing and sales from Walvis Bay, Namibia.',
+    title: 'Shoondili Auto CC | Japanese Vehicle Sourcing',
+    description: 'Japanese vehicle sourcing and import service from Walvis Bay, Namibia.',
   },
   metadataBase: new URL('https://shoondili.com'),
   alternates: {
@@ -55,9 +55,9 @@ export const metadata: Metadata = {
 function JsonLd() {
   const localBusiness = {
     '@context': 'https://schema.org',
-    '@type': ['LocalBusiness', 'AutoDealer'],
+    '@type': ['LocalBusiness'],
     name: 'Shoondili Auto CC',
-    description: 'Vehicle sourcing and sales from Walvis Bay, Namibia. Japanese imports, local inventory, and finance guidance.',
+    description: 'Japanese vehicle sourcing and import service from Walvis Bay, Namibia. We search, source, ship, and assist with clearance and registration.',
     telephone: '081 248 6557',
     email: 'shoondiliconsultant7@gmail.com',
     address: {

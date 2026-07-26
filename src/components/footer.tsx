@@ -1,7 +1,7 @@
 'use client';
 
 import Link from 'next/link';
-import { FOOTER_LINKS, SITE_NAME, PHONE, EMAIL, LOCATION, WHATSAPP_URL, PHONE_RAW } from '@/lib/constants';
+import { FOOTER_LINKS, SITE_NAME, PHONE, EMAIL, LOCATION, WHATSAPP_URL, PHONE_RAW, PRICING_DISCLAIMER } from '@/lib/constants';
 import { useState } from 'react';
 
 function WhatsAppIcon() {
@@ -38,142 +38,151 @@ function MapPinIcon() {
   );
 }
 
+function ArrowRightIcon() {
+  return (
+    <svg className="w-4 h-4 shrink-0 transition-transform duration-300 group-hover:translate-x-2" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+      <path strokeLinecap="round" strokeLinejoin="round" d="M9 5l7 7-7 7" />
+    </svg>
+  );
+}
+
 export function Footer() {
   const [hoveredLink, setHoveredLink] = useState<string | null>(null);
 
   return (
     <footer className="mt-auto" style={{ backgroundColor: '#090909' }}>
-      {/* ─── Marquee-style top divider with gold line ─── */}
-      <div className="relative h-px w-full overflow-hidden" style={{ backgroundColor: 'rgba(255,255,255,0.12)' }}>
+      {/* ─── Animated gold line divider ─── */}
+      <div className="relative h-1 w-full overflow-hidden" style={{ backgroundColor: 'rgba(255,255,255,0.06)' }}>
         <div
-          className="absolute inset-y-0 w-24"
+          className="absolute inset-y-0 w-32"
           style={{
             backgroundColor: '#F5B400',
-            animation: 'footerGoldSlide 8s linear infinite',
+            animation: 'footerGoldSlide 10s linear infinite',
+            borderRadius: '9999px',
           }}
         />
       </div>
 
-      {/* ─── Hero-style contact banner ─── */}
-      <div className="py-16 sm:py-20 relative overflow-hidden">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="grid lg:grid-cols-2 gap-12 items-center">
-            {/* Left: Big editorial statement */}
-            <div>
+      {/* ─── Hero-style contact banner — Collins editorial style ─── */}
+      <div className="py-20 sm:py-28 relative overflow-hidden">
+        {/* Subtle background pattern */}
+        <div className="absolute inset-0 opacity-[0.03]" style={{
+          backgroundImage: `radial-gradient(circle at 20% 50%, #F5B400 0%, transparent 50%), radial-gradient(circle at 80% 50%, #F5B400 0%, transparent 50%)`,
+        }} />
+
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+          <div className="grid lg:grid-cols-5 gap-16 items-start">
+            {/* Left: Big editorial statement — 3 columns */}
+            <div className="lg:col-span-3">
+              <p className="text-xs uppercase tracking-[0.2em] mb-6" style={{ color: '#F5B400' }}>
+                Sourcing from Japan to Namibia
+              </p>
               <h2
-                className="font-serif-editorial tracking-editorial-tight text-3xl sm:text-4xl lg:text-5xl mb-6"
-                style={{ color: '#F7F7F4', lineHeight: '1.1' }}
+                className="font-serif-editorial tracking-editorial-tight text-4xl sm:text-5xl lg:text-6xl mb-8"
+                style={{ color: '#F7F7F4', lineHeight: '1.05' }}
               >
-                Ready to find<br />your next vehicle?
+                Let us find<br />your next vehicle
               </h2>
-              <p className="text-sm mb-8 max-w-md" style={{ color: '#9B9B96', lineHeight: '1.6' }}>
-                Whether you want to browse inventory, start an import, discuss finance, or sell your current vehicle — reach us on WhatsApp. We respond fast.
+              <p className="text-sm mb-4 max-w-lg" style={{ color: '#9B9B96', lineHeight: '1.7' }}>
+                Shoondili is a Japanese vehicle sourcing and import service based in Walvis Bay, Namibia. We search, source, ship, and assist with clearance and registration. You review every detail before committing.
+              </p>
+              <p className="text-sm mb-10 max-w-lg" style={{ color: '#9B9B96', lineHeight: '1.7' }}>
+                We respond fastest on WhatsApp. Reach us any time to start your enquiry.
               </p>
               <a
                 href={WHATSAPP_URL}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="px-6 py-4 text-sm font-mono inline-flex items-center gap-3 transition-all duration-200 hover:scale-[0.98]"
-                style={{
-                  backgroundColor: '#F5B400',
-                  color: '#090909',
-                  borderRadius: '4px',
-                }}
+                className="btn-gold px-8 py-4 text-sm font-mono inline-flex items-center gap-3"
               >
                 <WhatsAppIcon />
                 Start a WhatsApp chat
               </a>
             </div>
 
-            {/* Right: Contact cards — stacked, editorial */}
-            <div className="space-y-3">
+            {/* Right: Contact cards — 2 columns */}
+            <div className="lg:col-span-2 space-y-4">
               <a
-                href={`${WHATSAPP_URL}?text=${encodeURIComponent('Hi Shoondili, I\'d like to enquire about a vehicle.')}`}
+                href={`${WHATSAPP_URL}?text=${encodeURIComponent('Hi Shoondili, I\'d like to enquire about sourcing a vehicle from Japan.')}`}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="flex items-center gap-4 p-4 rounded-lg transition-all duration-300 group"
+                className="flex items-center gap-4 p-5 rounded-2xl transition-all duration-300 group"
                 style={{
                   backgroundColor: '#111111',
                   border: '1px solid rgba(255,255,255,0.12)',
                 }}
               >
                 <div
-                  className="flex items-center justify-center w-10 h-10 rounded shrink-0 transition-colors duration-300"
+                  className="flex items-center justify-center w-12 h-12 rounded-full shrink-0 transition-colors duration-300"
                   style={{ backgroundColor: '#181818', color: '#F5B400' }}
                 >
                   <WhatsAppIcon />
                 </div>
                 <div className="flex-1">
-                  <p className="text-xs uppercase tracking-widest" style={{ color: '#F5B400' }}>WhatsApp</p>
-                  <p className="text-sm font-mono" style={{ color: '#F7F7F4' }}>{PHONE}</p>
+                  <p className="text-xs uppercase tracking-[0.15em]" style={{ color: '#F5B400' }}>WhatsApp</p>
+                  <p className="text-sm font-mono mt-1" style={{ color: '#F7F7F4' }}>{PHONE}</p>
                 </div>
-                <svg className="w-4 h-4 shrink-0 transition-transform duration-300 group-hover:translate-x-1" fill="none" viewBox="0 0 24 24" stroke="#9B9B96" strokeWidth={2}>
-                  <path strokeLinecap="round" strokeLinejoin="round" d="M9 5l7 7-7 7" />
-                </svg>
+                <ArrowRightIcon />
               </a>
 
               <a
                 href={`tel:+${PHONE_RAW}`}
-                className="flex items-center gap-4 p-4 rounded-lg transition-all duration-300 group"
+                className="flex items-center gap-4 p-5 rounded-2xl transition-all duration-300 group"
                 style={{
                   backgroundColor: '#111111',
                   border: '1px solid rgba(255,255,255,0.12)',
                 }}
               >
                 <div
-                  className="flex items-center justify-center w-10 h-10 rounded shrink-0"
+                  className="flex items-center justify-center w-12 h-12 rounded-full shrink-0"
                   style={{ backgroundColor: '#181818', color: '#F5B400' }}
                 >
                   <PhoneIcon />
                 </div>
                 <div className="flex-1">
-                  <p className="text-xs uppercase tracking-widest" style={{ color: '#F5B400' }}>Phone</p>
-                  <p className="text-sm font-mono" style={{ color: '#F7F7F4' }}>{PHONE}</p>
+                  <p className="text-xs uppercase tracking-[0.15em]" style={{ color: '#F5B400' }}>Phone</p>
+                  <p className="text-sm font-mono mt-1" style={{ color: '#F7F7F4' }}>{PHONE}</p>
                 </div>
-                <svg className="w-4 h-4 shrink-0 transition-transform duration-300 group-hover:translate-x-1" fill="none" viewBox="0 0 24 24" stroke="#9B9B96" strokeWidth={2}>
-                  <path strokeLinecap="round" strokeLinejoin="round" d="M9 5l7 7-7 7" />
-                </svg>
+                <ArrowRightIcon />
               </a>
 
               <a
                 href={`mailto:${EMAIL}`}
-                className="flex items-center gap-4 p-4 rounded-lg transition-all duration-300 group"
+                className="flex items-center gap-4 p-5 rounded-2xl transition-all duration-300 group"
                 style={{
                   backgroundColor: '#111111',
                   border: '1px solid rgba(255,255,255,0.12)',
                 }}
               >
                 <div
-                  className="flex items-center justify-center w-10 h-10 rounded shrink-0"
+                  className="flex items-center justify-center w-12 h-12 rounded-full shrink-0"
                   style={{ backgroundColor: '#181818', color: '#F5B400' }}
                 >
                   <EmailIcon />
                 </div>
                 <div className="flex-1">
-                  <p className="text-xs uppercase tracking-widest" style={{ color: '#F5B400' }}>Email</p>
-                  <p className="text-sm font-mono" style={{ color: '#F7F7F4' }}>{EMAIL}</p>
+                  <p className="text-xs uppercase tracking-[0.15em]" style={{ color: '#F5B400' }}>Email</p>
+                  <p className="text-sm font-mono mt-1" style={{ color: '#F7F7F4' }}>{EMAIL}</p>
                 </div>
-                <svg className="w-4 h-4 shrink-0 transition-transform duration-300 group-hover:translate-x-1" fill="none" viewBox="0 0 24 24" stroke="#9B9B96" strokeWidth={2}>
-                  <path strokeLinecap="round" strokeLinejoin="round" d="M9 5l7 7-7 7" />
-                </svg>
+                <ArrowRightIcon />
               </a>
 
               <div
-                className="flex items-center gap-4 p-4 rounded-lg"
+                className="flex items-center gap-4 p-5 rounded-2xl"
                 style={{
                   backgroundColor: '#111111',
                   border: '1px solid rgba(255,255,255,0.12)',
                 }}
               >
                 <div
-                  className="flex items-center justify-center w-10 h-10 rounded shrink-0"
+                  className="flex items-center justify-center w-12 h-12 rounded-full shrink-0"
                   style={{ backgroundColor: '#181818', color: '#F5B400' }}
                 >
                   <MapPinIcon />
                 </div>
                 <div className="flex-1">
-                  <p className="text-xs uppercase tracking-widest" style={{ color: '#F5B400' }}>Location</p>
-                  <p className="text-sm font-mono" style={{ color: '#F7F7F4' }}>{LOCATION}</p>
+                  <p className="text-xs uppercase tracking-[0.15em]" style={{ color: '#F5B400' }}>Location</p>
+                  <p className="text-sm font-mono mt-1" style={{ color: '#F7F7F4' }}>{LOCATION}</p>
                   <p className="text-xs mt-1" style={{ color: '#9B9B96' }}>Viewings by arrangement. No showroom.</p>
                 </div>
               </div>
@@ -183,34 +192,34 @@ export function Footer() {
       </div>
 
       {/* ─── Navigation grid ─── */}
-      <div className="h-px w-full" style={{ backgroundColor: 'rgba(255,255,255,0.12)' }} />
+      <div className="h-px w-full" style={{ backgroundColor: 'rgba(255,255,255,0.08)' }} />
 
-      <div className="py-12 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-8">
+      <div className="py-16 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-10">
           {/* Brand column */}
           <div>
-            <Link href="/" aria-label="Shoondili Auto CC home" className="mb-4 block">
+            <Link href="/" aria-label="Shoondili Auto CC home" className="mb-6 block logo-glow">
               <img
                 src="/brand/logo-dark.svg"
                 alt="Shoondili Auto CC"
-                className="h-8 w-auto"
-                style={{ maxHeight: '32px' }}
+                className="h-10 w-auto"
+                style={{ maxHeight: '40px' }}
               />
             </Link>
-            <p className="text-xs" style={{ color: '#9B9B96', lineHeight: '1.6' }}>
-              Vehicle sourcing and sales from Walvis Bay, Namibia. Japanese imports, local inventory, and finance guidance.
+            <p className="text-xs" style={{ color: '#9B9B96', lineHeight: '1.7' }}>
+              Japanese vehicle sourcing and import service from Walvis Bay, Namibia. We connect Namibian buyers with Japanese vehicle suppliers.
             </p>
           </div>
 
           {/* Vehicles */}
           <div>
-            <h3 className="text-xs uppercase tracking-widest mb-4" style={{ color: '#F5B400' }}>Vehicles</h3>
-            <ul className="space-y-2">
+            <h3 className="text-xs uppercase tracking-[0.15em] mb-5" style={{ color: '#F5B400' }}>Vehicles</h3>
+            <ul className="space-y-3">
               {FOOTER_LINKS.vehicles.map((link) => (
                 <li key={link.href}>
                   <Link
                     href={link.href}
-                    className="text-sm transition-colors duration-200"
+                    className="text-sm transition-all duration-300 hover:translate-x-1"
                     style={{ color: hoveredLink === link.href ? '#F5B400' : '#9B9B96' }}
                     onMouseEnter={() => setHoveredLink(link.href)}
                     onMouseLeave={() => setHoveredLink(null)}
@@ -224,13 +233,13 @@ export function Footer() {
 
           {/* Company */}
           <div>
-            <h3 className="text-xs uppercase tracking-widest mb-4" style={{ color: '#F5B400' }}>Company</h3>
-            <ul className="space-y-2">
+            <h3 className="text-xs uppercase tracking-[0.15em] mb-5" style={{ color: '#F5B400' }}>Company</h3>
+            <ul className="space-y-3">
               {FOOTER_LINKS.company.map((link) => (
                 <li key={link.href}>
                   <Link
                     href={link.href}
-                    className="text-sm transition-colors duration-200"
+                    className="text-sm transition-all duration-300 hover:translate-x-1"
                     style={{ color: hoveredLink === link.href ? '#F5B400' : '#9B9B96' }}
                     onMouseEnter={() => setHoveredLink(link.href)}
                     onMouseLeave={() => setHoveredLink(null)}
@@ -244,13 +253,13 @@ export function Footer() {
 
           {/* Legal */}
           <div>
-            <h3 className="text-xs uppercase tracking-widest mb-4" style={{ color: '#F5B400' }}>Legal</h3>
-            <ul className="space-y-2">
+            <h3 className="text-xs uppercase tracking-[0.15em] mb-5" style={{ color: '#F5B400' }}>Legal</h3>
+            <ul className="space-y-3">
               {FOOTER_LINKS.legal.map((link) => (
                 <li key={link.href}>
                   <Link
                     href={link.href}
-                    className="text-sm transition-colors duration-200"
+                    className="text-sm transition-all duration-300 hover:translate-x-1"
                     style={{ color: hoveredLink === link.href ? '#F5B400' : '#9B9B96' }}
                     onMouseEnter={() => setHoveredLink(link.href)}
                     onMouseLeave={() => setHoveredLink(null)}
@@ -264,8 +273,17 @@ export function Footer() {
         </div>
       </div>
 
-      {/* ─── Bottom bar — editorial ─── */}
-      <div className="h-px w-full" style={{ backgroundColor: 'rgba(255,255,255,0.12)' }} />
+      {/* ─── Pricing disclaimer ─── */}
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-8">
+        <div className="rounded-2xl p-4" style={{ backgroundColor: '#111111', border: '1px solid rgba(245,180,0,0.15)' }}>
+          <p className="text-xs" style={{ color: '#9B9B96', lineHeight: '1.6' }}>
+            {PRICING_DISCLAIMER}
+          </p>
+        </div>
+      </div>
+
+      {/* ─── Bottom bar ─── */}
+      <div className="h-px w-full" style={{ backgroundColor: 'rgba(255,255,255,0.08)' }} />
 
       <div className="py-6 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex flex-col sm:flex-row items-center justify-between gap-4">
